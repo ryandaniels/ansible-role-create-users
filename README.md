@@ -1,8 +1,8 @@
 # ansible-role-create-users
 
-Manage users on each server in the user list (list is in the file vars/secret).  
+Manage users in the user list variable file (list is in the file vars/secret).  
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
-Note: Deleting users is not done on purpose.
+Note: Deleting users is not done on purpose.  
 
 Distros tested
 ------------
@@ -30,8 +30,9 @@ ansible-galaxy install -r requirements.yml
 
 ansible-vault
 ------------
-
+ 
 - Use ansible-vault to encrypt sensitive info from git.
+
 ```
 cat vars/secret
 #encrypt if cleartext (before git commit/push)

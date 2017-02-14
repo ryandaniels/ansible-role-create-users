@@ -1,4 +1,4 @@
-# ansible-create-users
+# ansible-role-create-users
 
 Manage users on each server in the user list (list is in the file vars/secret).  
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  

@@ -1,16 +1,16 @@
 # ansible-create-users
 
-Manage users on each server in the user list (list is in the file vars/secret).
-Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.
+Manage users on each server in the user list (list is in the file vars/secret).  
+Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
 Note: Deleting users is not done on purpose.
 
 Distros tested
 ------------
 
-Ubuntu 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
-CentOS 7.3. It should work on older versions of CentOS 7.
-CentOS 6.5
-CentOS 5.9
+* Ubuntu 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
+* CentOS 7.3. It should work on older versions of CentOS 7.
+* CentOS 6.5
+* CentOS 5.9
 
 
 Dependencies
@@ -19,12 +19,14 @@ Dependencies
 - lqueryvg.chage
 
 To install:
+```
 cd ./roles
 ansible-galaxy install --roles-path . lqueryvg.chage
-
+```
 OR
-
+```
 ansible-galaxy install -r requirements.yml
+```
 
 ansible-vault
 ------------
@@ -60,9 +62,9 @@ secret
 
 How to generate password
 ------------
-
+```
 mkpasswd --method=SHA-512
-
+```
 
 Default Settings
 ------------
@@ -75,19 +77,19 @@ User Settings
 
 - File Location: vars/secret :
 
-- username: required
-- sudo: yes|no (required)
-- user_state: present|lock (required)
-- password: sha512 encrypted password (optional). If not set, password is set to "!"
-- update_password: always|on_create (optional, default is on_create to be safe).
-- WARNING: when 'always', password will be change to password value.
+- **username**: required
+- **sudo**: yes|no (required)
+- **user_state**: present|lock (required)
+- **password**: sha512 encrypted password (optional). If not set, password is set to "!"
+- **update_password**: always|on_create (optional, default is on_create to be safe).  
+  **WARNING**: when 'always', password will be change to password value.  
   If you are using this on an existing users, make sure to have the password set.
-- comment: Full name and Department or description of application (optional) (But you should set this!)
-- shell: path to shell (optional, default is /bin/bash)
-- ssh_key: ssh key for ssh key based authentication (optional)
-- NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
-- exclusive_ssh_key: yes|no (optional, default: no)
-- WARNING: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
+- **comment**: Full name and Department or description of application (optional) (But you should set this!)
+- **shell**: path to shell (optional, default is /bin/bash)
+- **ssh_key**: ssh key for ssh key based authentication (optional)  
+  NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
+- **exclusive_ssh_key**: yes|no (optional, default: no)  
+  **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
 
 
 Example config file (vars/secret)

@@ -1,6 +1,6 @@
 # ansible-create-users
 
-Manage users on each server in the list (list is in the file roles/create-users/vars/secret).
+Manage users on each server in the user list (list is in the file vars/secret).
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.
 Note: Deleting users is not done on purpose.
 
@@ -31,12 +31,12 @@ ansible-vault
 
 - Use ansible-vault to encrypt sensitive info from git.
 ```
-cat roles/create-users/vars/secret
+cat vars/secret
 #encrypt if cleartext (before git commit/push)
-ansible-vault encrypt roles/create-users/vars/secret
+ansible-vault encrypt vars/secret
 
 #Edit encrypted file:
-ansible-vault edit roles/create-users/vars/secret
+ansible-vault edit vars/secret
 
 vi .vaultpass
 -Enter the password for Ansible Vault from Password Safe
@@ -73,7 +73,7 @@ Default Settings
 User Settings
 ------------
 
-- File Location: roles/create-users/vars/secret :
+- File Location: vars/secret :
 
 - username: required
 - sudo: yes|no (required)
@@ -90,7 +90,7 @@ User Settings
 - WARNING: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
 
 
-Example config file (roles/create-users/vars/secret)
+Example config file (vars/secret)
 ------------
 
 ```

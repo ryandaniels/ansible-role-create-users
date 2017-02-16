@@ -31,7 +31,7 @@ ansible-galaxy install -r requirements.yml
 ansible-vault
 ------------
 
-- Use ansible-vault to encrypt sensitive info from git.
+Use ansible-vault to encrypt sensitive info from git.
 
 ```
 cat vars/secret
@@ -76,7 +76,7 @@ Default Settings
 User Settings
 ------------
 
-- File Location: vars/secret :
+File Location: vars/secret
 
 - **username**: required
 - **sudo**: yes|no (required)
@@ -141,7 +141,7 @@ users:
 ```
 
 
-Example Playbook
+Example Playbook create-users.yml
 ------------
 
 ```
@@ -166,7 +166,7 @@ Prep
 Usage
 ------------
 
-- Create all users
+Create all users
 
 ```
 ansible-playbook create-users.yml --ask-vault-pass --extra-vars "inventory=all-dev" -i hosts

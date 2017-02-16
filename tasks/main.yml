@@ -16,7 +16,7 @@
   when: item.user_state == 'present' or item.user_state == 'lock'
   with_items: "{{ users }}"
   loop_control:
-    label: "username: {{item.username}}, use_sudo: {{ item.use_sudo }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}"
+    label: "username: {{item.username}}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}"
 
 #TODO: Change to user module once -1 bug fixed.
 #TODO: Follow issue https://github.com/ansible/ansible/issues/20096
@@ -87,6 +87,7 @@
   with_items: "{{ users }}"
   loop_control:
     label: "username: {{item.username}}, use_sudo: {{ item.use_sudo }}"
+#environment fixes Redhat issue of hard-coded path to visudo
 
 - name: Sudo | remove from sudoers file and validate
   lineinfile:

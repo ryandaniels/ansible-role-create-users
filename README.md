@@ -30,7 +30,7 @@ ansible-galaxy install -r requirements.yml
 
 ansible-vault
 ------------
- 
+
 - Use ansible-vault to encrypt sensitive info from git.
 
 ```

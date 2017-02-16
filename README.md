@@ -8,7 +8,7 @@ Distros tested
 ------------
 
 * Ubuntu 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
-* CentOS 7.3. It should work on older versions of CentOS 7.
+* CentOS 7.3
 * CentOS 6.5
 * CentOS 5.9
 
@@ -141,7 +141,19 @@ users:
 ```
 
 
-Usage
+Example Playbook
+------------
+
+```
+---
+- hosts: '{{inventory}}'
+  become: yes
+  roles:
+   - create-users
+```
+
+
+Prep
 ------------
 
 - install ansible
@@ -150,8 +162,13 @@ Usage
 - configure client server authorized_keys
 - run ansible commands
 
+
+Usage
+------------
+
+- Create all users
+
 ```
-# Create all users
 ansible-playbook create-users.yml --ask-vault-pass --extra-vars "inventory=all-dev" -i hosts
 ```
 

@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - galaxy-role-name-here
+    - ansible-role-create-users

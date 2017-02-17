@@ -1,6 +1,6 @@
 ---
-- include_vars:
-    file: '../vars/secret'
+#- include_vars:
+#    file: '../vars/secret'
 
 - name: Add users | create users, shell, home dirs
   user:

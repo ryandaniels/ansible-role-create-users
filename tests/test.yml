@@ -1,6 +1,8 @@
 ---
 - hosts: localhost
   remote_user: root
+  vars_files:
+    - tests/vars/secret
   roles:
     - lqueryvg.chage
     - ansible-role-create-users

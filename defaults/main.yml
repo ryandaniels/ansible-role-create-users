@@ -1,0 +1,3 @@
+---
+default_update_password: on_create
+default_shell: /bin/bash

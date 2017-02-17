@@ -1,5 +1,7 @@
 # ansible-role-create-users
 
+[![Build Status](https://travis-ci.org/ryandaniels/ansible-role-create-users.svg?branch=master)](https://travis-ci.org/ryandaniels/ansible-role-create-users)
+
 Manage users in the user list variable file (list is in the file vars/secret).  
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
 Note: Deleting users is not done on purpose.  

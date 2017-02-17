@@ -60,7 +60,7 @@ vi .gitignore
 #Insert the following lines
 .vaultpass
 .retry
-secret
+vars/secret
 ```
 
 How to generate password
@@ -100,9 +100,6 @@ Example config file (vars/secret)
 
 ```
 ---
-default_update_password: on_create
-default_shell: /bin/bash
-
 users:
   - username: testuser101
     password: $6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60

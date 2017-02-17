@@ -2,5 +2,5 @@
 - hosts: localhost
   remote_user: root
   roles:
-    - galaxy-lqueryvg.chage
+    - lqueryvg.chage
     - ansible-role-create-users

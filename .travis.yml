@@ -9,7 +9,17 @@ before_install:
 install:
   # Install Ansible.
   - pip install ansible
+  - |
+    if [ -f requirements.yml ]; then
+      ansible-galaxy install --roles-path ../ -r requirements.yml
+    fi
 
+
+"install": [
+    "pip install -r requirements-devel.txt",
+    "if [ -f tests/requirements.yml ]; then\n  ansible-galaxy install -r tests/requirements.yml\nfi\n"
+  ],
+  
   # Add ansible.cfg to pick up roles path.
 #  - "printf '[defaults]\nroles_path = ../' > ansible.cfg"
   - "{ echo '[defaults]'; echo 'roles_path = ../'; } >> ansible.cfg"

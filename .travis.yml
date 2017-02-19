@@ -39,12 +39,12 @@ script:
   - id testuser103 | grep --silent "testuser103"
   - id testuser104 | grep --silent "testuser104"
   - id testuser105 | grep --silent "testuser105"
-  - grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
-  - grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
+  - sudo grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
+  - sudo grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
   - grep --silent "^testuser101:" /etc/group
   - ls -lgd /home/testuser101 | awk '{exit $3!="testuser101"}'
-  - ls -lg /home/testuser101/.ssh/authorized_keys | awk '{exit $3!="testuser101"}'
-  - cat /home/testuser101/.ssh/authorized_keys | wc -l | grep --silent "2"
+  - sudo ls -lg /home/testuser101/.ssh/authorized_keys | awk '{exit $3!="testuser101"}'
+  - sudo cat /home/testuser101/.ssh/authorized_keys | wc -l | grep --silent "2"
   - sudo chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
   - sudo chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
   - sudo cat /etc/sudoers|grep --silent "^testuser102 "
@@ -53,11 +53,11 @@ script:
   - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --sudo"
   
   # Check password changed or not
-  - grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
-  - grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRnt__NEW_SHOULD_CHANGE__6jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
+  - sudo grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
+  - sudo grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRnt__NEW_SHOULD_CHANGE__6jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
   # Confirm you locked yourself out
-  - grep testuser103 /etc/shadow | awk -F":" '{exit $2!="!"}'
+  - sudo grep testuser103 /etc/shadow | awk -F":" '{exit $2!="!"}'
   # Confirm ssh key was changed and only 1 entry in file
-  - grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
+  - sudo grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
   - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
   

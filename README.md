@@ -60,7 +60,7 @@ vi .gitignore
 #Insert the following lines
 .vaultpass
 .retry
-vars/secret
+secret
 ```
 
 How to generate password
@@ -86,7 +86,7 @@ File Location: vars/secret
 - **password**: sha512 encrypted password (optional). If not set, password is set to "!"
 - **update_password**: always|on_create (optional, default is on_create to be safe).  
   **WARNING**: when 'always', password will be change to password value.  
-  If you are using this on an existing users, make sure to have the password set.
+  If you are using this on an **existing** users, **make sure to have the password set**.
 - **comment**: Full name and Department or description of application (optional) (But you should set this!)
 - **shell**: path to shell (optional, default is /bin/bash)
 - **ssh_key**: ssh key for ssh key based authentication (optional)  
@@ -148,7 +148,7 @@ Example Playbook create-users.yml
 - hosts: '{{inventory}}'
   become: yes
   roles:
-   - create-users
+  - create-users
 ```
 
 

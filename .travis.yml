@@ -45,9 +45,9 @@ script:
   - ls -lgd /home/testuser101 | awk '{exit $3!="testuser101"}'
   - ls -lg /home/testuser101/.ssh/authorized_keys | awk '{exit $3!="testuser101"}'
   - cat /home/testuser101/.ssh/authorized_keys | wc -l | grep --silent "2"
-  - chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
-  - chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
-  - cat /etc/sudoers|grep --silent "^testuser102 "
+  - sudo chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
+  - sudo chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
+  - sudo cat /etc/sudoers|grep --silent "^testuser102 "
 
   # Run the role/playbook again but change a password, and change password where on_create is set
   - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --sudo"
@@ -59,5 +59,5 @@ script:
   - grep testuser103 /etc/shadow | awk -F":" '{exit $2!="!"}'
   # Confirm ssh key was changed and only 1 entry in file
   - grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
-  - cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
+  - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
   

@@ -3,6 +3,8 @@
   remote_user: root
 
   vars:
+    debug_enabled_default: false
+
     users:
       - username: testuser101
         password: $6$/y5RGZnFaD3f$96xVdOAnldEtS__NEW_SHOULD_NOT_CHANGE__bFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60

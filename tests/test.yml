@@ -1,8 +1,6 @@
 ---
 - hosts: localhost
   remote_user: root
-#  vars_files:
-#    - tests/vars/secret
 
   vars:
     users:
@@ -17,6 +15,10 @@
         exclusive_ssh_key: yes
         use_sudo: no
         user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
 
       - username: testuser102
         password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
@@ -25,24 +27,40 @@
         shell: /bin/sh
         use_sudo: yes
         user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
 
       - username: testuser103
         password: $6$wBxBAqRmG6O$gPbg9hYShkuIe3YKMFujwiKsPKZHNFwoK4yCyTOlploljz53YSoPdCn9P5k8Qm0z062Q.8hvJ6DnnQQjwtrnS0
         update_password: always
         use_sudo: no
         user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
 
       - username: testuser104
         ssh_key: ssh-rsa AAAB.... test104@server
         exclusive_ssh_key: no
         use_sudo: no
         user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
 
       - username: testuser105
         password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
         ssh_key: ssh-rsa AAAB.... test107@server
         use_sudo: no
         user_state: lock
+        servers:
+          - webserver
+          - database
+          - monitoring
 
   roles:
     - lqueryvg.chage

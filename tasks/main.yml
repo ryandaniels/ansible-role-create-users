@@ -3,6 +3,7 @@
 #    file: '../vars/secret'
 
 - debug: var=group_names
+  when: debug_enabled_default | bool
 
 - name: Add users | create users, shell, home dirs
   user:
@@ -25,12 +26,6 @@
     label: "username: {{item.0.username}}, user_state: {{ item.0.user_state }}, password: {{ 'True' if item.0.password is defined else 'False' }}, update_password: {{ item.0.update_password if item.0.update_password is defined else default_update_password}}, servers: {{ item.1 if item.1 is defined else '' }}, group_names: {{ group_names }}"
 
 #- debug: var=user_results
-- debug: var=servers
-
-#- name: list servers in vars file
-#  set_fact:
-#    list_servers_in_variables_file: "{{users|map(attribute='servers')|list|unique }}"   
-#- debug: msg="{{ list_servers_in_variables_file }}"
 
 #TODO: Change to user module once -1 bug fixed.
 #TODO: Follow issue https://github.com/ansible/ansible/issues/20096

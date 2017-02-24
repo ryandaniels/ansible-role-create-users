@@ -1,3 +1,4 @@
 ---
+debug_enabled_default: false
 default_update_password: on_create
 default_shell: /bin/bash

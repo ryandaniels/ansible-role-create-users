@@ -74,6 +74,7 @@ mkpasswd --method=SHA-512
 Default Settings
 ------------
 
+- debug_enabled_default: false
 - shell: /bin/bash
 - update_password: on_create
 

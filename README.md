@@ -5,6 +5,7 @@
 Manage users in the user list config file (list is in the file vars/secret).  
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
 This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
+
 Note: Deleting users is not done on purpose.  
 
 Distros tested
@@ -67,8 +68,17 @@ secret
 
 How to generate password
 ------------
+
+- on Ubuntu - Install "whois" package
+
 ```
 mkpasswd --method=SHA-512
+```
+
+- on RedHat - Use Python
+
+```
+python -c 'import crypt,getpass; print(crypt.crypt(getpass.getpass(), crypt.mksalt(crypt.METHOD_SHA512)))'
 ```
 
 Default Settings

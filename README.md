@@ -94,7 +94,6 @@ User Settings
 File Location: vars/secret
 
 - **username**: username - no spaces **(required)**
-- **sudo**: yes|no **(required)**
 - **user_state**: present|lock **(required)**
 - **password**: sha512 encrypted password (optional). If not set, password is set to "!"
 - **update_password**: always|on_create (optional, default is on_create to be safe).  
@@ -106,6 +105,8 @@ File Location: vars/secret
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
 - **exclusive_ssh_key**: yes|no (optional, default: no)  
   **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
+- **sudo**: yes|no (optional, default no)
+- **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
 - **servers**: subelement list of servers where changes are made. **(required)**  
   You can have duplicate usernames on different servers, if you want to have different settings. See below example of testuser102 has sudo on servers defined as the centos6 group in the inventory, but no sudo on centos7.
 
@@ -126,6 +127,7 @@ users:
       ssh-rsa AAAA.... testuser101@server2
     exclusive_ssh_key: yes
     use_sudo: no
+    use_sudo_nopass: no
     user_state: present
     servers:
       - webserver
@@ -147,14 +149,12 @@ users:
     update_password: always
     comment: Test User 101
     shell: /bin/sh
-    use_sudo: no
     user_state: present
     servers:
       - database
 
   - username: testuser103
     password: $6$wBxBAqRmG6O$gPbg9hYShkuIe3YKMFujwiKsPKZHNFwoK4yCyTOlploljz53YSoPdCn9P5k8Qm0z062Q.8hvJ6DnnQQjwtrnS0
-    use_sudo: no
     user_state: present
     servers:
       - webserver

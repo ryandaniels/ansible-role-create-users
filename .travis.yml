@@ -22,7 +22,7 @@ script:
   # Check the role/playbook's syntax.
   - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
   - ansible-playbook -i tests/inventory tests/test-passchange.yml --syntax-check
-  
+
   # Run the role/playbook with ansible-playbook.
   - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo"
 

@@ -94,16 +94,17 @@
     dest: /etc/sudoers
     state: present
     regexp: '^{{item.0.username}}'
-    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD:ALL'
+#    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD:ALL'
+    line: "{{ item.0.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.0.use_sudo_nopass|d(false) )  else '' }}ALL"
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|bool == true and item.1 in "{{ group_names }}"
+  when: item.0.use_sudo|d(false)|bool == true and item.1 in "{{ group_names }}"
   with_subelements:
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo }}"
+    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo|d(false) }}, use_sudo_nopass: {{ item.0.use_sudo_nopass|d(false) }}"
 #environment fixes Redhat issue of hard-coded path to visudo
 
 - name: Sudo | remove from sudoers file and validate
@@ -111,14 +112,14 @@
     dest: /etc/sudoers
     state: absent
     regexp: '^{{ item.0.username }}'
-    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD:ALL'
+    line: '{{ item.0.username }} '
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|bool == false and item.1 in "{{ group_names }}"
+  when: item.0.use_sudo|d(false)|bool == false and item.1 in "{{ group_names }}"
   with_subelements:
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo }}"
+    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo|d(false) }}"
 

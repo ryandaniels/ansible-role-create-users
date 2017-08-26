@@ -17,7 +17,8 @@
 #    expires: -1 #unlock account if locked ###Doesn't work like chage..
 #    command: chage -E -1 {{ item.0.username }} #unlock password authentication
 #  register: user_results
-  when: (item.0.user_state == 'present' or item.0.user_state == 'lock') and item.1 in "{{ group_names }}"
+#  when: (item.0.user_state == 'present' or item.0.user_state == 'lock') and item.1 in "{{ group_names }}"
+  when: (item.0.user_state == 'present' or item.0.user_state == 'lock') and item.1 in group_names
 #works but not multiple servers #and 'centos6' in "{{ group_names }}" 
   with_subelements:
     - "{{ users }}"
@@ -34,7 +35,7 @@
     user: "{{ item.0.username }}"
     sp_expire: -1
 #  command: chage -E -1 {{ item.username }} #unlock password authentication
-  when: item.0.user_state == 'present' and item.1 in "{{ group_names }}"
+  when: item.0.user_state == 'present' and item.1 in group_names
   with_subelements:
     - "{{ users }}"
     - servers
@@ -63,7 +64,7 @@
     user: "{{ item.0.username }}"
     sp_expire: 0
 #  command: chage -E 0 {{ item.0.username }} #Alternative lock password & ssh key authentication
-  when: item.0.user_state == 'lock' and item.1 in "{{ group_names }}"
+  when: item.0.user_state == 'lock' and item.1 in group_names
   with_subelements:
     - "{{ users }}"
     - servers
@@ -82,7 +83,7 @@
     key: "{{ item.0.ssh_key }}"
     exclusive: "{{ item.0.exclusive_ssh_key if item.0.exclusive_ssh_key is defined else 'no' }}"
     state: present
-  when: item.0.ssh_key is defined and item.1 in "{{ group_names }}"
+  when: item.0.ssh_key is defined and item.1 in group_names
   with_subelements:
     - "{{ users }}"
     - servers
@@ -93,13 +94,13 @@
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^{{item.0.username}}'
+    regexp: '^{{item.0.username}} '
 #    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD:ALL'
     line: "{{ item.0.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.0.use_sudo_nopass|d(false) )  else '' }}ALL"
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|d(false)|bool == true and item.1 in "{{ group_names }}"
+  when: item.0.use_sudo|d(false)|bool == true and item.1 in group_names
   with_subelements:
     - "{{ users }}"
     - servers
@@ -111,12 +112,12 @@
   lineinfile:
     dest: /etc/sudoers
     state: absent
-    regexp: '^{{ item.0.username }}'
-    line: '{{ item.0.username }} '
+    regexp: '^{{ item.0.username }} '
+    line: '{{ item.0.username }}'
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|d(false)|bool == false and item.1 in "{{ group_names }}"
+  when: item.0.use_sudo|d(false)|bool == false and item.1 in group_names
   with_subelements:
     - "{{ users }}"
     - servers

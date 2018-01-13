@@ -100,6 +100,7 @@ File Location: vars/secret
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
 - **comment**: Full name and Department or description of application (optional) (But you should set this!)
+- **groups**: Comma separated list of groups the user will be added to
 - **shell**: path to shell (optional, default is /bin/bash)
 - **ssh_key**: ssh key for ssh key based authentication (optional)  
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.

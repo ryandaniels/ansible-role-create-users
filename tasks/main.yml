@@ -5,6 +5,17 @@
 - debug: var=group_names
   when: debug_enabled_default | bool
 
+- name: Add group | create groups before adding user to group
+  group:
+    name: "{{ item.0.groups }}"
+    state: present
+  when: item.0.groups is defined and item.1 in group_names
+  with_subelements:
+    - "{{ users }}"
+    - servers
+  loop_control:
+    label: "username: {{item.0.username}}, groups: {{ item.0.groups if item.0.groups is defined else ''}}"
+
 - name: Add users | create users, shell, home dirs
   user:
     name: "{{ item.0.username }}"
@@ -18,7 +29,6 @@
 #    expires: -1 #unlock account if locked ###Doesn't work like chage..
 #    command: chage -E -1 {{ item.0.username }} #unlock password authentication
 #  register: user_results
-#  when: (item.0.user_state == 'present' or item.0.user_state == 'lock') and item.1 in "{{ group_names }}"
   when: (item.0.user_state == 'present' or item.0.user_state == 'lock') and item.1 in group_names
 #works but not multiple servers #and 'centos6' in "{{ group_names }}"
   with_subelements:

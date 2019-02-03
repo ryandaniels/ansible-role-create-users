@@ -8,36 +8,23 @@ This is done on a per "group" basis (Ansible group variables), as set in the con
 
 Note: Deleting users is not done on purpose.  
 
-Distros tested
-------------
+## Distros tested
 
+* Ubuntu 18.04
 * Ubuntu 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
 * CentOS 7.3
 * CentOS 6.5
 * CentOS 5.9
 
+## Dependencies
 
-Dependencies
-------------
+* None
 
-- lqueryvg.chage
-
-To install:
-```
-cd ./roles
-ansible-galaxy install --roles-path . lqueryvg.chage
-```
-OR
-```
-ansible-galaxy install -r requirements.yml
-```
-
-ansible-vault
-------------
+## ansible-vault
 
 Use ansible-vault to encrypt sensitive info from git.
 
-```
+```bash
 cat vars/secret
 #encrypt if cleartext (before git commit/push)
 ansible-vault encrypt vars/secret
@@ -54,10 +41,9 @@ vi ansible.cfg
 vault_password_file = ./.vaultpass
 ```
 
-.gitignore
-------------
+## .gitignore
 
-```
+```bash
 vi .gitignore
 #Insert the following lines
 .vaultpass
@@ -66,56 +52,51 @@ secret
 *.secret
 ```
 
-How to generate password
-------------
+## How to generate password
 
-- on Ubuntu - Install "whois" package
+* on Ubuntu - Install "whois" package
 
-```
+```bash
 mkpasswd --method=SHA-512
 ```
 
-- on RedHat - Use Python
+* on RedHat - Use Python
 
-```
+```bash
 python -c 'import crypt,getpass; print(crypt.crypt(getpass.getpass(), crypt.mksalt(crypt.METHOD_SHA512)))'
 ```
 
-Default Settings
-------------
+## Default Settings
 
-- debug_enabled_default: false
-- shell: /bin/bash
-- update_password: on_create
+* debug_enabled_default: false
+* shell: /bin/bash
+* update_password: on_create
 
-User Settings
-------------
+## User Settings
 
 File Location: vars/secret
 
-- **username**: username - no spaces **(required)**
-- **user_state**: present|lock **(required)**
-- **password**: sha512 encrypted password (optional). If not set, password is set to "!"
-- **update_password**: always|on_create (optional, default is on_create to be safe).  
+* **username**: username - no spaces **(required)**
+* **user_state**: present|lock **(required)**
+* **password**: sha512 encrypted password (optional). If not set, password is set to "!"
+* **update_password**: always|on_create (optional, default is on_create to be safe).  
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
-- **comment**: Full name and Department or description of application (optional) (But you should set this!)
-- **groups**: Comma separated list of groups the user will be added to
-- **shell**: path to shell (optional, default is /bin/bash)
-- **ssh_key**: ssh key for ssh key based authentication (optional)  
+* **comment**: Full name and Department or description of application (optional) (But you should set this!)
+* **groups**: Comma separated list of groups the user will be added to
+* **shell**: path to shell (optional, default is /bin/bash)
+* **ssh_key**: ssh key for ssh key based authentication (optional)  
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
-- **exclusive_ssh_key**: yes|no (optional, default: no)  
+* **exclusive_ssh_key**: yes|no (optional, default: no)  
   **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
-- **sudo**: yes|no (optional, default no)
-- **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
-- **servers**: subelement list of servers where changes are made. **(required)**  
+* **sudo**: yes|no (optional, default no)
+* **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
+* **servers**: subelement list of servers where changes are made. **(required)**  
   You can have duplicate usernames on different servers, if you want to have different settings. See below example of testuser102 has sudo on servers defined as the centos6 group in the inventory, but no sudo on centos7.
 
+## Example config file (vars/secret)
 
-Example config file (vars/secret)
-------------
-
-```
+```yaml
 ---
 users:
   - username: testuser101
@@ -179,11 +160,9 @@ users:
       - database
 ```
 
+## Example Playbook create-users.yml
 
-Example Playbook create-users.yml
-------------
-
-```
+```bash
 ---
 - hosts: '{{inventory}}'
   vars_files:
@@ -193,23 +172,18 @@ Example Playbook create-users.yml
   - create-users
 ```
 
+## Prep
 
-Prep
-------------
+* install ansible
+* create keys
+* ssh to client to add entry to known_hosts file
+* configure client server authorized_keys
+* run ansible commands
 
-- install ansible
-- create keys
-- ssh to client to add entry to known_hosts file
-- configure client server authorized_keys
-- run ansible commands
-
-
-Usage
-------------
+## Usage
 
 Create all users
 
-```
+```bash
 ansible-playbook create-users.yml --ask-vault-pass --extra-vars "inventory=all-dev" -i hosts
 ```
-

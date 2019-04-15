@@ -16,9 +16,13 @@
   loop_control:
     label: "username: {{item.0.username}}, groups: {{ item.0.groups if item.0.groups is defined else ''}}"
 
+- debug: var=users
+  when: debug_enabled_default | bool
+
 - name: Add users | create users, shell, home dirs
   user:
     name: "{{ item.0.username }}"
+    uid: "{{ item.0.uid | default(omit, True) }}"
     password: "{{ item.0.password if item.0.password is defined else '!' }}"
     update_password: "{{ item.0.update_password if item.0.update_password is defined else default_update_password }}"
     groups: "{{ item.0.groups | default(omit) }}"

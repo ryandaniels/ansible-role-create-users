@@ -1,7 +1,4 @@
 ---
-#- include_vars:
-#    file: '../vars/secret'
-
 - debug: var=group_names
   when: debug_enabled_default | bool
 
@@ -14,7 +11,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, groups: {{ item.0.groups if item.0.groups is defined else ''}}"
+    label: "username: {{ item.0.username }}, groups: {{ item.0.groups if item.0.groups is defined else ''}}"
 
 - name: Add users | create users, shell, home dirs
   user:
@@ -35,7 +32,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, user_state: {{ item.0.user_state }}, password: {{ 'True' if item.0.password is defined else 'False' }}, update_password: {{ item.0.update_password if item.0.update_password is defined else default_update_password}}, groups: {{ item.0.groups if item.0.groups is defined else ''}}, servers: {{ item.1 if item.1 is defined else '' }}, group_names: {{ group_names }}"
+    label: "username: {{ item.0.username }}, user_state: {{ item.0.user_state }}, password: {{ 'True' if item.0.password is defined else 'False' }}, update_password: {{ item.0.update_password if item.0.update_password is defined else default_update_password }}, groups: {{ item.0.groups if item.0.groups is defined else ''}}, servers: {{ item.1 if item.1 is defined else '' }}, group_names: {{ group_names }}" # noqa 204
 
 - name: Add users | Unlock password login (set expiry to -1)
   user:
@@ -48,7 +45,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, user_state: {{ item.0.user_state }}"
+    label: "username: {{ item.0.username }}, user_state: {{ item.0.user_state }}"
 
 #- debug: var=user_results
 
@@ -91,7 +88,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, user_state: {{ item.0.user_state }}"
+    label: "username: {{ item.0.username }}, user_state: {{ item.0.user_state }}"
 
 #Not needed, sp_expire -1 locks password authentication as well.
 #- name: Lock users | Lock password login
@@ -110,24 +107,25 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, ssh_key: {{ 'True' if item.0.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.0.exclusive_ssh_key if item.0.exclusive_ssh_key is defined else 'False' }}"
+    label: "username: {{ item.0.username }}, ssh_key: {{ 'True' if item.0.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.0.exclusive_ssh_key if item.0.exclusive_ssh_key is defined else 'False' }}" # noqa 204
 
 - name: Sudo | add to sudoers file and validate
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^{{item.0.username}} '
+    regexp: '^{{ item.0.username }} '
 #    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD:ALL'
     line: "{{ item.0.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.0.use_sudo_nopass|d(false) )  else '' }}ALL"
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|d(false)|bool == true and item.1 in group_names
+  # TODO: Fix literal compare
+  when: item.0.use_sudo|d(false)|bool == true and item.1 in group_names # noqa 601
   with_subelements:
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo|d(false) }}, use_sudo_nopass: {{ item.0.use_sudo_nopass|d(false) }}"
+    label: "username: {{ item.0.username }}, use_sudo: {{ item.0.use_sudo|d(false) }}, use_sudo_nopass: {{ item.0.use_sudo_nopass|d(false) }}"
 #environment fixes Redhat issue of hard-coded path to visudo
 
 - name: Sudo | remove from sudoers file and validate
@@ -139,10 +137,11 @@
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
-  when: item.0.use_sudo|d(false)|bool == false and item.1 in group_names
+  # TODO: Fix literal compare
+  when: item.0.use_sudo|d(false)|bool == false and item.1 in group_names # noqa 601
   with_subelements:
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{item.0.username}}, use_sudo: {{ item.0.use_sudo|d(false) }}"
+    label: "username: {{ item.0.username }}, use_sudo: {{ item.0.use_sudo|d(false) }}"
 

@@ -24,11 +24,11 @@ script:
   - ansible-playbook -i tests/inventory tests/test-passchange.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook.
-  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo"
+  - "ansible-playbook -i tests/inventory tests/test.yml --connection=local --become"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook -i tests/inventory tests/test.yml --connection=local --sudo
+    ansible-playbook -i tests/inventory tests/test.yml --connection=local --become
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
@@ -50,7 +50,7 @@ script:
   - sudo cat /etc/sudoers|grep --silent "^testuser102 "
 
   # Run the role/playbook again but change a password, and change password where on_create is set
-  - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --sudo"
+  - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --become"
 
   # Check password changed or not
   - sudo grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'

@@ -89,10 +89,30 @@ File Location: vars/secret
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
 * **exclusive_ssh_key**: yes|no (optional, default: no)  
   **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
-* **sudo**: yes|no (optional, default no)
+* **use_sudo**: yes|no (optional, default no)
 * **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
-* **servers**: subelement list of servers where changes are made. **(required)**  
-  You can have duplicate usernames on different servers, if you want to have different settings. See below example of testuser102 has sudo on servers defined as the centos6 group in the inventory, but no sudo on centos7.
+* **servers**: sub-element list of servers where changes are made. **(required)**  
+  These are the Ansible groups from your Ansible inventory file. In below examples, `webserver` would be the 3 servers in the `webserver` Ansible inventory `webserver1`, `webserver2`, and `webserver3`.  
+
+Note:
+  You can have duplicate usernames on different servers, if you want to have different settings. See below example of testuser102 has sudo on servers defined as the `webserver` group in the inventory, but no sudo on the `database` group.
+
+## Example Ansible Inventory file
+
+```yaml
+[webserver]
+webserver1
+webserver2
+webserver3
+
+[database]
+db1
+db2
+db3
+
+[monitoring]
+monitor1
+```
 
 ## Example config file (vars/secret)
 

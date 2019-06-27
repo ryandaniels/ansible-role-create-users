@@ -48,6 +48,7 @@ script:
   - sudo chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
   - sudo chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
   - sudo cat /etc/sudoers|grep --silent "^testuser102 "
+  - sudo grep sshuser /etc/passwd | awk -F":" '{exit $3!="1099"}'
 
   # Run the role/playbook again but change a password, and change password where on_create is set
   - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --become"
@@ -60,4 +61,3 @@ script:
   # Confirm ssh key was changed and only 1 entry in file
   - sudo grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
   - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
-

@@ -77,6 +77,7 @@ python -c 'import crypt,getpass; print(crypt.crypt(getpass.getpass(), crypt.mksa
 File Location: vars/secret
 
 * **username**: username - no spaces **(required)**
+* **uid**: The numerical value of the user's ID (optional)
 * **user_state**: present|lock **(required)**
 * **password**: sha512 encrypted password (optional). If not set, password is set to "!"
 * **update_password**: always|on_create (optional, default is on_create to be safe).  
@@ -171,6 +172,7 @@ users:
       - monitoring
 
   - username: testuser105
+    uid: 1099
     password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
     ssh_key: ssh-rsa AAAB.... test107@server
     use_sudo: no

@@ -55,6 +55,7 @@
           - monitoring
 
       - username: testuser105
+        uid: 1099
         password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
         ssh_key: ssh-rsa AAAB.... test107@server
         use_sudo: no

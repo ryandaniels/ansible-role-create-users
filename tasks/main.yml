@@ -16,6 +16,9 @@
 - debug: var=users
   when: debug_enabled_default | bool
 
+- debug: var=users
+  when: debug_enabled_default | bool
+
 - name: Add users | create users, shell, home dirs
   user:
     name: "{{ item.0.username }}"

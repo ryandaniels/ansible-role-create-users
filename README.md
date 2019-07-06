@@ -7,18 +7,18 @@ Manage users in the user list config file (list is in the file vars/secret).
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
 This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
 
+More detailed example can be found in the blog post: [User Management with Ansible](https://ryandaniels.ca/blog/ansible-user-management/)  
+
 Note: Deleting users is not done on purpose.  
 
 ## Distros tested
 
 * Ubuntu 18.04 / 16.04
-* CentOS / RHEL 7.x
-* CentOS / RHEL 6.5
-* CentOS / RHEL 5.9
+* CentOS / RHEL: 7.x, 6.5, 5.9
 
 ## Dependencies
 
-* None
+Requires Ansible 2.6 (due to previous [bug 20096](https://github.com/ansible/ansible/issues/20096) with un-expiring users)
 
 ## ansible-vault
 

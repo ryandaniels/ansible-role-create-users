@@ -2,20 +2,19 @@
 
 [![Build Status](https://travis-ci.org/ryandaniels/ansible-role-create-users.svg?branch=master)](https://travis-ci.org/ryandaniels/ansible-role-create-users)
 
+Role to manage users on linux.  
 Manage users in the user list config file (list is in the file vars/secret).  
 Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
 This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
 
 Note: Deleting users is not done on purpose.  
 
-TODO: Add to Ansible Galaxy
-
 ## Distros tested
 
-* Ubuntu 18.04 / 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
-* CentOS 7.x
-* CentOS 6.5
-* CentOS 5.9
+* Ubuntu 18.04 / 16.04
+* CentOS / RHEL 7.x
+* CentOS / RHEL 6.5
+* CentOS / RHEL 5.9
 
 ## Dependencies
 

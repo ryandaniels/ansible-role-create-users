@@ -148,4 +148,3 @@
     - servers
   loop_control:
     label: "username: {{ item.0.username }}, use_sudo: {{ item.0.use_sudo|d(false) }}"
-

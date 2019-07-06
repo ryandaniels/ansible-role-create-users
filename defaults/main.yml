@@ -1,4 +1,5 @@
 ---
+#Note: 'debug_enabled_default: true' will put hashed passwords in the output.
 debug_enabled_default: false
 default_update_password: on_create
 default_shell: /bin/bash

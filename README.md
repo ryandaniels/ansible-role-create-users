@@ -8,11 +8,12 @@ This is done on a per "group" basis (Ansible group variables), as set in the con
 
 Note: Deleting users is not done on purpose.  
 
+TODO: Add to Ansible Galaxy
+
 ## Distros tested
 
-* Ubuntu 18.04
-* Ubuntu 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
-* CentOS 7.3
+* Ubuntu 18.04 / 16.04 as a client. It should work on older versions of Ubuntu/Debian based systems.
+* CentOS 7.x
 * CentOS 6.5
 * CentOS 5.9
 
@@ -68,9 +69,13 @@ python -c 'import crypt,getpass; print(crypt.crypt(getpass.getpass(), crypt.mksa
 
 ## Default Settings
 
-* debug_enabled_default: false
-* shell: /bin/bash
-* update_password: on_create
+```yaml
+---
+#Note: 'debug_enabled_default: true' will put hashed passwords in the output.
+debug_enabled_default: false
+default_update_password: on_create
+default_shell: /bin/bash
+```
 
 ## User Settings
 

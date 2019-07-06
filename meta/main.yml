@@ -28,5 +28,6 @@ galaxy_info:
         - all
   galaxy_tags:
     - system
+    - users
 
 dependencies: []

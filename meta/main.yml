@@ -1,4 +1,32 @@
 ---
-# dependencies:
-#   - { role: lqueryvg.chage }
+galaxy_info:
+  role_name: create-users
+  author: Ryan Daniels
+  description: Role to manage users on linux
+  license: MIT
+  min_ansible_version: 1.3
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: GenericUNIX
+      versions:
+        - all
+        - any
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: GenericLinux
+      versions:
+        - all
+        - any
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - system
 
+dependencies: []

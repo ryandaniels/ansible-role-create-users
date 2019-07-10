@@ -68,20 +68,20 @@
 
       - username: testuser106
         user_state: present
-        groups: testcommon
+        groups: groupcommon
         servers:
           - webserver
           - database
 
       - username: testuser107
         user_state: present
-        groups: testcommon, testuserweb
+        groups: groupcommon, testgroupweb
         servers:
           - webserver
 
       - username: testuser107
         user_state: present
-        groups: testcommon, testuserdb
+        groups: groupcommon, testgroupdb
         servers:
           - database
 

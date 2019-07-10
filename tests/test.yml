@@ -26,6 +26,7 @@
         password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
         update_password: always
         comment: Test User 101
+        groups: testnew102
         shell: /bin/sh
         use_sudo: yes
         user_state: present
@@ -65,6 +66,21 @@
           - database
           - monitoring
 
+      - username: testuser106
+        groups: testcommon
+        servers:
+          - webserver
+          - database
+
+      - username: testuser107
+        groups: testcommon, testuserweb
+        servers:
+          - webserver
+
+      - username: testuser107
+        groups: testcommon, testuserdb
+        servers:
+          - database
+
   roles:
-    # - lqueryvg.chage
     - ansible-role-create-users

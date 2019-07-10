@@ -1,20 +1,36 @@
 ---
-- debug: var=group_names
+- name: debug variable group_names
+  debug: var=group_names
+  when: debug_enabled_default | bool
+
+- name: debug variable users
+  debug: var=users
+  when: debug_enabled_default | bool
+
+# Get unique list of groups to create on the server (var is different on each server)
+# Still keeps formatting of comma separated list and converts to list (even if whitespace)
+- name: set_fact - get groups as list per server
+  set_fact:
+    groups_as_list: "{{ (groups_as_list|default([]) + item.0.groups.split(','))|map('trim')|list|sort|unique }}"
+  with_subelements:
+    - "{{ users }}"
+    - servers
+  when: item.0.groups is defined and item.1 in group_names
+  loop_control:
+    label: "username: {{ item.0.username }}, groups_as_list: {{ item.0.groups if item.0.groups is defined else '' }}"
+
+- name: debug show groups_as_list
+  debug: var=groups_as_list
   when: debug_enabled_default | bool
 
 - name: Add group | create groups before adding user to group
   group:
-    name: "{{ item.0.groups }}"
+    name: "{{ item }}"
     state: present
-  when: item.0.groups is defined and item.1 in group_names
-  with_subelements:
-    - "{{ users }}"
-    - servers
+  when: groups_as_list is defined
+  loop: "{{ groups_as_list }}"
   loop_control:
-    label: "username: {{ item.0.username }}, groups: {{ item.0.groups if item.0.groups is defined else ''}}"
-
-- debug: var=users
-  when: debug_enabled_default | bool
+    label: "groups: {{ item }}"
 
 - name: Add users | create users, shell, home dirs
   user:

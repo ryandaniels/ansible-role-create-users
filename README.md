@@ -88,7 +88,7 @@ File Location: vars/secret
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
 * **comment**: Full name and Department or description of application (optional) (But you should set this!)
-* **groups**: Comma separated list of groups the user will be added to
+* **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
 * **shell**: path to shell (optional, default is /bin/bash)
 * **ssh_key**: ssh key for ssh key based authentication (optional)  
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
@@ -145,6 +145,7 @@ users:
     password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
     update_password: always
     comment: Test User 101
+    groups: testcommon, testgroup102web
     shell: /bin/sh
     use_sudo: yes
     user_state: present
@@ -155,6 +156,7 @@ users:
     password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
     update_password: always
     comment: Test User 101
+    groups: testcommon, testgroup102db
     shell: /bin/sh
     user_state: present
     servers:

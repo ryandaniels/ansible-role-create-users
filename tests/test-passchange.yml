@@ -66,18 +66,21 @@
           - monitoring
 
       - username: testuser106
-        groups: testcommon
+        user_state: present
+        groups: groupcommon
         servers:
           - webserver
           - database
 
       - username: testuser107
-        groups: testcommon, testuserweb
+        user_state: present
+        groups: groupcommon, testgroupweb
         servers:
           - webserver
 
       - username: testuser107
-        groups: testcommon, testuserdb
+        user_state: present
+        groups: groupcommon, testgroupdb
         servers:
           - database
 

@@ -17,7 +17,7 @@
     - servers
   when: item.0.groups is defined and item.1 in group_names
   loop_control:
-    label: "username: {{item.0.username}}, groups_as_list: {{ item.0.groups if item.0.groups is defined else '' }}"
+    label: "username: {{ item.0.username }}, groups_as_list: {{ item.0.groups if item.0.groups is defined else '' }}"
 
 - name: debug show groups_as_list
   debug: var=groups_as_list

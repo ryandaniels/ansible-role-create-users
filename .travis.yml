@@ -52,7 +52,7 @@ script:
   - grep sshuser /etc/passwd | awk -F":" '{exit $3!="1099"}'
   # Check group(s) are set for users
   - grep "^groupcommon:" /etc/group | grep --silent testuser106
-  - grep "^testgroupweb:" /etc/group | grep --silent testuser106
+  - grep "^testgroupweb:" /etc/group | grep --silent testuser107
   # Check group not set on webserver
   - grep "^testgroupdb:" /etc/group | grep --silent testuser107 || echo "success, testgroupdb not found"
 

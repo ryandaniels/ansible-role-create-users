@@ -4,7 +4,7 @@
 
 Role to manage users on linux.  
 Manage users in the user list config file (list is in the file vars/secret).  
-Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication.  
+Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication, add users (append) to group(s) and group will be created if doesn't exist.  
 This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
 
 More detailed example can be found in the blog post: [User Management with Ansible](https://ryandaniels.ca/blog/ansible-user-management/)  

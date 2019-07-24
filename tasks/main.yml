@@ -40,6 +40,7 @@
     update_password: "{{ item.0.update_password if item.0.update_password is defined else default_update_password }}"
     groups: "{{ item.0.groups | default(omit) }}"
     shell: "{{ item.0.shell if item.0.shell is defined else default_shell }}"
+    home: "{{ item.0.home | default(omit, True) }}"
     createhome: yes
     comment: "{{ item.0.comment if item.0.comment is defined else '' }}"
     state: present #hard-coded in case user sets state of absent. Choice made to never delete accounts!

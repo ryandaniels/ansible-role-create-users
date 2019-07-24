@@ -82,6 +82,7 @@ File Location: vars/secret
 
 * **username**: username - no spaces **(required)**
 * **uid**: The numerical value of the user's ID (optional)
+* **home**: The path for the new home. Default is unset (optional)
 * **user_state**: present|lock **(required)**
 * **password**: sha512 encrypted password (optional). If not set, password is set to "!"
 * **update_password**: always|on_create (optional, default is on_create to be safe).  
@@ -128,6 +129,7 @@ users:
   - username: testuser101
     password: $6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60
     update_password: on_create
+    home: /data/users/testuser101
     comment: Test User 100
     shell: /bin/bash
     authorized_key_file: /etc/ssh/keys/testuser101

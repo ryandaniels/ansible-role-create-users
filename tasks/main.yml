@@ -122,6 +122,7 @@
     user: "{{ item.0.username }}"
     key: "{{ item.0.ssh_key }}"
     path: "{{ item.0.authorized_key_file | default(omit, True) }}"
+    manage_dir: "{{ item.0.manage_ssh_dir if item.0.manage_ssh_dir is defined else 'no' }}"
     exclusive: "{{ item.0.exclusive_ssh_key if item.0.exclusive_ssh_key is defined else 'no' }}"
     state: present
   when: item.0.ssh_key is defined and item.1 in group_names

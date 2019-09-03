@@ -92,7 +92,9 @@ File Location: vars/secret
 * **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
 * **shell**: path to shell (optional, default is /bin/bash)
 * **ssh_key**: ssh key for ssh key based authentication (optional)  
-* **authorized_key_file**: Where to put the SSH authorized key file. If not set, default is ~/.ssh/authorized_keys (optional)  
+* **authorized_key_file**: Where to put the SSH authorized key file. If not set, default is ~/.ssh/authorized_keys (optional)
+* **manage_dir**: Either change the owner of the directory to the key owner, or keep as it is. Default no. 
+
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
 * **exclusive_ssh_key**: yes|no (optional, default: no)  
   **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
@@ -133,6 +135,7 @@ users:
     comment: Test User 100
     shell: /bin/bash
     authorized_key_file: /etc/ssh/keys/testuser101
+    manage_dir: no
     ssh_key: |
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8crAHG/a9QBD4zO0ZHIjdRXy+ySKviXVCMIJ3/NMIAAzDyIsPKToUJmIApHHHF1/hBllqzBSkPEMwgFbXjyqTeVPHF8V0iq41n0kgbulJG testuser101@server1
       ssh-rsa AAAA.... testuser101@server2

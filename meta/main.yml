@@ -29,5 +29,8 @@ galaxy_info:
   galaxy_tags:
     - system
     - users
+    - ssh
+    - accounts
+    - user
 
 dependencies: []

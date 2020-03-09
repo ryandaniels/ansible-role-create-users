@@ -67,3 +67,6 @@ script:
   # Confirm ssh key was changed and only 1 entry in file
   - sudo grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
   - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

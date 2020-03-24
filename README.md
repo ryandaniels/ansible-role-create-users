@@ -4,7 +4,7 @@
 
 Role to manage users on linux.  
 Manage users in the user list config file (list is in the file vars/secret).  
-Add users, change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication, add users (append) to group(s) and group will be created if doesn't exist.  
+Add users (with specific uid), change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication, set user's primary group and gid, add user (append) to group(s) and group will be created if doesn't exist.  
 This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
 
 More detailed example can be found in the blog post: [User Management with Ansible](https://ryandaniels.ca/blog/ansible-user-management/)  
@@ -88,6 +88,9 @@ File Location: vars/secret
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
 * **comment**: Full name and Department or description of application (optional) (But you should set this!)
+* **group**: Primary group name (optional).
+* **gid**: Primary group ID (optional). If same gid is reused on server the playbook will fail. If same duplicate group is specified with different gid, last configured will be used.
+  **WARNING**: changing the group and/or gid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.
 * **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
 * **shell**: path to shell (optional, default is /bin/bash)
 * **ssh_key**: ssh key for ssh key based authentication (optional)  

@@ -55,6 +55,11 @@ script:
   - grep "^testgroupweb:" /etc/group | grep --silent testuser107
   # Check group not set on webserver
   - grep "^testgroupdb:" /etc/group | grep --silent testuser107 || echo "success, testgroupdb not found"
+  # Check primary group set
+  - id -gn testuser105 | grep --silent "group105primary"
+  # Check primary group id set
+  - id -gn testuser106 | grep --silent "group106primary"
+  - id -g testuser106 | grep --silent 2222
 
   # Run the role/playbook again but change a password, and change password where on_create is set
   - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --become"

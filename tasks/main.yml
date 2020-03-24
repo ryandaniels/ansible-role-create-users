@@ -7,6 +7,18 @@
   debug: var=users
   when: debug_enabled_default | bool
 
+- name: Add group | create primary group before adding user to group
+  group:
+    name: "{{ item.0.group }}"
+    gid: "{{ item.0.gid | default(omit) }}"
+    state: present
+  when: item.0.group is defined and item.1 in group_names
+  with_subelements:
+    - "{{ users }}"
+    - servers
+  loop_control:
+    label: "group: {{ item.0.group if item.0.group is defined else '' }}, gid: {{ item.0.gid if item.0.gid is defined else 'default' }}"
+
 # Get unique list of groups to create on the server (var is different on each server)
 # Still keeps formatting of comma separated list and converts to list (even if whitespace)
 - name: set_fact - get groups as list per server
@@ -38,6 +50,7 @@
     uid: "{{ item.0.uid | default(omit, True) }}"
     password: "{{ item.0.password if item.0.password is defined else '!' }}"
     update_password: "{{ item.0.update_password if item.0.update_password is defined else default_update_password }}"
+    group: "{{ item.0.group | default(omit) }}"
     groups: "{{ item.0.groups | default(omit) }}"
     shell: "{{ item.0.shell if item.0.shell is defined else default_shell }}"
     createhome: yes

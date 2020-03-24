@@ -65,7 +65,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "username: {{ item.0.username }}, user_state: {{ item.0.user_state }}, password: {{ 'True' if item.0.password is defined else 'False' }}, update_password: {{ item.0.update_password if item.0.update_password is defined else default_update_password }}, groups: {{ item.0.groups if item.0.groups is defined else ''}}, servers: {{ item.1 if item.1 is defined else '' }}, group_names: {{ group_names }}" # noqa 204
+    label: "username: {{ item.0.username }}, user_state: {{ item.0.user_state }}, password: {{ 'True' if item.0.password is defined else 'False' }}, update_password: {{ item.0.update_password if item.0.update_password is defined else default_update_password }}, group: {{ item.0.group if item.0.group is defined else ''}}, groups: {{ item.0.groups if item.0.groups is defined else ''}}, servers: {{ item.1 if item.1 is defined else '' }}, group_names: {{ group_names }}" # noqa 204
 
 - name: Add users | Unlock password login (set expiry to -1)
   user:

@@ -88,9 +88,9 @@ File Location: vars/secret
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
 * **comment**: Full name and Department or description of application (optional) (But you should set this!)
-* **group**: Primary group name (optional).
-* **gid**: Primary group ID (optional). If same gid is reused on server the playbook will fail. If same duplicate group is specified with different gid, last configured will be used.
-  **WARNING**: changing the group and/or gid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.
+* **primarygroup**: Primary group name (optional).
+* **primarygid**: Primary group ID (optional). If same gid is reused on server the playbook will fail. If same duplicate group is specified with different gid, last configured will be used.
+  **WARNING**: changing the primarygroup and/or primarygid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.
 * **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
 * **shell**: path to shell (optional, default is /bin/bash)
 * **ssh_key**: ssh key for ssh key based authentication (optional)  
@@ -172,6 +172,7 @@ users:
       - webserver
 
   - username: testuser104
+    primarygroup: testgroup104primary
     ssh_key: ssh-rsa AAAB.... test103@server
     exclusive_ssh_key: no
     use_sudo: no
@@ -183,6 +184,8 @@ users:
   - username: testuser105
     uid: 1099
     password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
+    primarygroup: testgroup105primary
+    primarygid: 2222
     ssh_key: ssh-rsa AAAB.... test107@server
     use_sudo: no
     user_state: lock

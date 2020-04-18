@@ -17,7 +17,7 @@
     - "{{ users }}"
     - servers
   loop_control:
-    label: "primarygroup: {{ item.0.primarygroup if item.0.primarygroup is defined else '' }}, primarygid: {{ item.0.primarygid if item.0.primarygid is defined else 'default' }}"
+    label: "primarygroup: {{ item.0.primarygroup if item.0.primarygroup is defined else '' }}, primarygid: {{ item.0.primarygid if item.0.primarygid is defined else 'default' }}" # noqa 204
 
 # Get unique list of groups to create on the server (var is different on each server)
 # Still keeps formatting of comma separated list and converts to list (even if whitespace)

@@ -95,7 +95,7 @@
           - webserver
           - database
           - monitoring
-        
+
       - username: testuser109
         user_state: present
         generate_ssh_key: yes
@@ -113,6 +113,14 @@
           - webserver
           - database
           - monitoring
-        
+
+      - username: testuser111
+        user_state: present
+        system: yes
+        servers:
+          - webserver
+          - database
+          - monitoring
+
   roles:
     - ansible-role-create-users

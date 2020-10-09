@@ -142,6 +142,19 @@
   loop_control:
     label: "username: {{ item.0.username }}, ssh_key: {{ 'True' if item.0.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.0.exclusive_ssh_key if item.0.exclusive_ssh_key is defined else 'False' }}" # noqa 204
 
+- name: SSH Keys | Generate ssh key
+  user:
+    name: "{{ item.0.username }}"
+    generate_ssh_key: "{{ item.0.generate_ssh_key | default(false) }}"
+    ssh_key_bits: "{{ item.0.ssh_key_bits | default(omit) }}"
+    ssh_key_passphrase: "{{ item.0.ssh_key_passphrase | default(omit) }}"
+  when: item.0.generate_ssh_key is defined and item.1 in group_names
+  with_subelements:
+    - "{{ users }}"
+    - servers
+  loop_control:
+    label: "username: {{ item.0.username }}, generate_ssh_key: {{ 'True' if item.0.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.0.ssh_key_bits if item.0.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.0.ssh_key_passphrase is defined else 'False' }} "
+
 - name: Sudo | add to sudoers file and validate
   lineinfile:
     dest: /etc/sudoers

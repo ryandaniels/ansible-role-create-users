@@ -39,6 +39,11 @@ script:
   - id testuser103 | grep --silent "testuser103"
   - id testuser104 | grep --silent "testuser104"
   - id testuser105 | grep --silent "testuser105"
+  - id testuser106 | grep --silent "testuser106"
+  - id testuser107 | grep --silent "testuser107"
+  - id testuser108 | grep --silent "testuser108"
+  - id testuser109 | grep --silent "testuser109"
+  - id testuser110 | grep --silent "testuser110"
   - sudo grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
   - sudo grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
   - grep --silent "^testuser101:" /etc/group
@@ -60,6 +65,15 @@ script:
   # Check primary group id set
   - id -gn testuser106 | grep --silent "group106primary"
   - id -g testuser106 | grep --silent 2222
+  # Check ssh key for user was created
+  - sudo cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+  - sudo cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+  # Check no ssh key for user was created
+  - sudo test ! -f /home/testuser110/.ssh/id_rsa
+  # Check key is encrypted
+  - sudo cat /home/testuser109/.ssh/id_rsa | grep --silent "ENCRYPTED"
+  # Check key size is correct
+  - sudo ssh-keygen -lf /home/testuser109/.ssh/id_rsa | awk '{exit $1!="4096"}'
 
   # Run the role/playbook again but change a password, and change password where on_create is set
   - "ansible-playbook -i tests/inventory tests/test-passchange.yml --connection=local --become"

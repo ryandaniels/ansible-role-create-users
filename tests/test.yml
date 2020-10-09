@@ -88,5 +88,31 @@
         servers:
           - database
 
+      - username: testuser108
+        user_state: present
+        generate_ssh_key: yes
+        servers:
+          - webserver
+          - database
+          - monitoring
+        
+      - username: testuser109
+        user_state: present
+        generate_ssh_key: yes
+        ssh_key_bits: 4096
+        ssh_key_passphrase: "use_vault_instead_of_cleartext_for_production"
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser110
+        user_state: present
+        generate_ssh_key: no
+        servers:
+          - webserver
+          - database
+          - monitoring
+        
   roles:
     - ansible-role-create-users

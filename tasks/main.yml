@@ -54,6 +54,7 @@
     groups: "{{ item.0.groups | default(omit) }}"
     shell: "{{ item.0.shell if item.0.shell is defined else default_shell }}"
     createhome: yes
+    system: "{{ item.0.system | default(omit) }}"
     comment: "{{ item.0.comment if item.0.comment is defined else '' }}"
     state: present #hard-coded in case user sets state of absent. Choice made to never delete accounts!
 #    expires: -1 #unlock account if locked ###Doesn't work like chage..

@@ -103,6 +103,7 @@ File Location: vars/secret
 * **ssh_key_passphrase**: Set a passphrase for the SSH key. If no passphrase is provided, the SSH key will default to having no passphrase.
 * **use_sudo**: yes|no (optional, default no)
 * **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
+* **system**: yes|no (optional, default no). yes = create system account (uid < 1000). Does not work on existing users.
 * **servers**: sub-element list of servers where changes are made. **(required)**  
   These are the Ansible groups from your Ansible inventory file. In below examples, `webserver` would be the 3 servers in the `webserver` Ansible inventory `webserver1`, `webserver2`, and `webserver3`.  
 

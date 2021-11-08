@@ -88,6 +88,7 @@ File Location: vars/secret
   **WARNING**: when 'always', password will be change to password value.  
   If you are using 'always' on an **existing** users, **make sure to have the password set**.
 * **comment**: Full name and Department or description of application (optional) (But you should set this!)
+* **home**: Set home directory (optional, default is /home).
 * **primarygroup**: Primary group name (optional).
 * **primarygid**: Primary group ID (optional). If same gid is reused on server the playbook will fail. If same duplicate group is specified with different gid, last configured will be used.
   **WARNING**: changing the primarygroup and/or primarygid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.

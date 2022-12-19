@@ -101,6 +101,7 @@
         generate_ssh_key: yes
         ssh_key_bits: 4096
         ssh_key_passphrase: "use_vault_instead_of_cleartext_for_production"
+        ssh_key_comment: testuser109@mypc
         servers:
           - webserver
           - database

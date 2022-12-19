@@ -101,6 +101,7 @@ File Location: vars/secret
   NOTE: This will not overwrite an existing SSH key
 * **ssh_key_bits**: Optionally specify number of bits in SSH key to create. (optional, default set by ssh-keygen)
 * **ssh_key_passphrase**: Set a passphrase for the SSH key. If no passphrase is provided, the SSH key will default to having no passphrase.
+* **ssh_key_comment**: Specify the comment for the generated SSH key (optional)
 * **use_sudo**: yes|no (optional, default no)
 * **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
 * **system**: yes|no (optional, default no). yes = create system account (uid < 1000). Does not work on existing users.
@@ -194,6 +195,7 @@ users:
     ssh_key: ssh-rsa AAAB.... test107@server
     generate_ssh_key: yes
     ssh_key_bits: 4096
+    ssh_key_comment: testuser105@mypc
     use_sudo: no
     user_state: lock
     servers:

@@ -70,10 +70,11 @@ python -c 'import crypt,getpass; print(crypt.crypt(getpass.getpass(), crypt.mksa
 
 ```yaml
 ---
-#Note: 'debug_enabled_default: true' will put hashed passwords in the output.
+# Note: 'debug_enabled_default: true' will put hashed passwords in the output.
 debug_enabled_default: false
 default_update_password: on_create
 default_shell: /bin/bash
+default_generate_ssh_key_comment: "{{ item.username }}@{{ ansible_hostname }}"
 ```
 
 ## User Settings
@@ -93,7 +94,7 @@ File Location: vars/secret
   **WARNING**: changing the primarygroup and/or primarygid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.
 * **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
 * **shell**: path to shell (optional, default is /bin/bash)
-* **ssh_key**: ssh key for ssh key based authentication (optional)  
+* **ssh_key**: Add authorized ssh key for ssh key based authentication (optional)  
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.
 * **exclusive_ssh_key**: yes|no (optional, default: no)  
   **WARNING**: exclusive_ssh_key: yes - will remove any ssh keys not defined here! no - will add any key specified.
@@ -101,7 +102,7 @@ File Location: vars/secret
   NOTE: This will not overwrite an existing SSH key
 * **ssh_key_bits**: Optionally specify number of bits in SSH key to create. (optional, default set by ssh-keygen)
 * **ssh_key_passphrase**: Set a passphrase for the SSH key. If no passphrase is provided, the SSH key will default to having no passphrase.
-* **ssh_key_comment**: Specify the comment for the generated SSH key (optional)
+* **generate_ssh_key_comment**: Specify the comment for the generated SSH key (optional). If not specified, will use default_generate_ssh_key_comment from defaults yaml.
 * **use_sudo**: yes|no (optional, default no)
 * **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
 * **system**: yes|no (optional, default no). yes = create system account (uid < 1000). Does not work on existing users.
@@ -181,6 +182,8 @@ users:
     primarygroup: testgroup104primary
     ssh_key: ssh-rsa AAAB.... test103@server
     exclusive_ssh_key: no
+    generate_ssh_key: yes
+    generate_ssh_key_comment: custom comment for generated ssh key
     use_sudo: no
     user_state: present
     servers:
@@ -195,7 +198,6 @@ users:
     ssh_key: ssh-rsa AAAB.... test107@server
     generate_ssh_key: yes
     ssh_key_bits: 4096
-    ssh_key_comment: testuser105@mypc
     use_sudo: no
     user_state: lock
     servers:

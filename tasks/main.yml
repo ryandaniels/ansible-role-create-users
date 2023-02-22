@@ -146,33 +146,23 @@
   loop_control:
     label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.ssh_key_bits if item.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.ssh_key_passphrase is defined else 'False' }}, generate_ssh_key_comment: {{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
 
-- name: Sudo | add to sudoers file and validate
-  lineinfile:
-    dest: /etc/sudoers
+- name: Sudo | Allow user to sudo all commands (Create/modify file /etc/sudoers.d/allow-user-<username>)
+  community.general.sudoers:
+    name: allow-user-{{ item.username }}
     state: present
-    regexp: '^{{ item.username }} '
-#    line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
-    line: "{{ item.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.use_sudo_nopass|d(false) )  else '' }}ALL"
-    validate: 'visudo -cf %s'
-  environment:
-    PATH: /usr/sbin:/usr/local/sbin:/sbin
-  # TODO: Fix literal compare
+    user: "{{ item.username }}"
+    commands: ALL
+    nopassword: "{{ item.use_sudo_nopass | default (false, true) }}" 
   when: item.use_sudo|d(false)|bool == true and item.servers | intersect(create_users_group_names) # noqa 601
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}, use_sudo_nopass: {{ item.use_sudo_nopass|d(false) }}"
 #environment fixes Redhat issue of hard-coded path to visudo
 
-- name: Sudo | remove from sudoers file and validate
-  lineinfile:
-    dest: /etc/sudoers
+- name: Sudo | Revoke sudo user grants (Remove file /etc/sudoers.d/allow-user-<username>)
+  community.general.sudoers:
+    name: allow-user-{{ item.username }}
     state: absent
-    regexp: '^{{ item.username }} '
-    line: '{{ item.username }}'
-    validate: 'visudo -cf %s'
-  environment:
-    PATH: /usr/sbin:/usr/local/sbin:/sbin
-  # TODO: Fix literal compare
   when: item.use_sudo|d(false)|bool == false and item.servers | intersect(create_users_group_names) # noqa 601
   loop: '{{ users }}'
   loop_control:

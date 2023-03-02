@@ -156,6 +156,20 @@
   loop_control:
     label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.ssh_key_bits if item.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.ssh_key_passphrase is defined else 'False' }}, generate_ssh_key_comment: {{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
 
+#TODO: Ensure ~/.ssh exists
+
+- name: SSH Keys | Add private key
+  copy:
+    dest: ~/.ssh/id_rsa
+    mode: '0600'
+    force: true
+    content: "{{ item.ssh_private_key }}"
+  when: item.ssh_private_key is defined and item.generate_ssh_key is not defined and item.servers | intersect(create_users_group_names)
+  loop: '{{ users }}'
+  loop_control:
+    label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_private_key: {{ 'True' if item.ssh_private_key is defined else 'False' }}"
+
+
 - name: Sudo | add to sudoers file and validate
   lineinfile:
     dest: /etc/sudoers

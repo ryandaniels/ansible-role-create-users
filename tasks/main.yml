@@ -12,6 +12,16 @@
   debug: var=users
   when: debug_enabled_default | bool
 
+- name: set_fact | get default home dir
+  ansible.builtin.shell:
+    cmd: "grep 'HOME=' /etc/default/useradd | cut -d= -f2"
+  register: homedir
+  changed_when: false
+
+- name: debug homedir.stdout variable
+  debug: var=homedir.stdout
+  when: debug_enabled_default | bool
+
 - name: Add group | create primary group before adding user to group
   group:
     name: "{{ item.primarygroup }}"

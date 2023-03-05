@@ -160,7 +160,7 @@
 
 - name: SSH Keys | Add private key
   copy:
-    dest: ~/.ssh/id_rsa
+    dest: "/{{ homedir.stdout }}/{{ item.username }}/.ssh/ansible_ssh_key"
     mode: '0600'
     force: true
     content: "{{ item.ssh_private_key }}"

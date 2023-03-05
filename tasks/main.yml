@@ -172,7 +172,7 @@
 
 - name: SSH Keys | Add private key
   copy:
-    dest: "{{ homedir.stdout }}/{{ item.username }}/.ssh/ansible_ssh_key"
+    dest: "{{ homedir.stdout }}/{{ item.username }}/.ssh/ansible-provisioned_ssh_key"
     mode: '0600'
     owner: "{{ item.username }}"
     group: "{{ item.primarygroup | default(omit)}}"

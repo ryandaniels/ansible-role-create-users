@@ -87,5 +87,52 @@
         servers:
           - database
 
+      # Test if ssh_private_key is overide
+      - username: testuser112
+        user_state: present
+        ssh_private_key: |
+          -----BEGIN OPENSSH PRIVATE KEY-----
+          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
+          -----END OPENSSH PRIVATE KEY-----
+        servers:
+          - webserver
+          - database
+          - monitoring
+
   roles:
     - ansible-role-create-users

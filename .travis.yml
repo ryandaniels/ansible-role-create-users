@@ -98,6 +98,8 @@ script:
   # Confirm ssh key was changed and only 1 entry in file
   - sudo grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
   - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
+  # Confirm ssh private key (ansible-provisioned_ssh_key) for user was changed
+  - sudo ssh-keygen -lf /home/testuser112/.ssh/ansible-provisioned_ssh_key | awk '{exit $2!="SHA256:YpTwoSg4oG6qbhwVv55wlJ+Ny/hkwNVa39sT6y7hyzw"}'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

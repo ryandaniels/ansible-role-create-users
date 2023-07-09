@@ -103,6 +103,7 @@ File Location: vars/secret
 * **ssh_key_bits**: Optionally specify number of bits in SSH key to create. (optional, default set by ssh-keygen)
 * **ssh_key_passphrase**: Set a passphrase for the SSH key. If no passphrase is provided, the SSH key will default to having no passphrase.
 * **generate_ssh_key_comment**: Specify the comment for the generated SSH key (optional). If not specified, will use default_generate_ssh_key_comment from defaults yaml.
+* **ssh_private_key**: Set an already generated private key. The key will be placed in *~/.ssh/ansible-provisioned_ssh_key*. If a key with this name already exists, it will be replaced. If *generate_ssh_key* is defined this parameter is ignored. It is recommended to retrieve the value from a vault. (optional) 
 * **use_sudo**: yes|no (optional, default no)
 * **use_sudo_nopass**: yes|no (optional, default no). yes = passwordless sudo.
 * **system**: yes|no (optional, default no). yes = create system account (uid < 1000). Does not work on existing users.
@@ -199,6 +200,21 @@ users:
     ssh_key: ssh-rsa AAAB.... test107@server
     generate_ssh_key: yes
     ssh_key_bits: 4096
+    use_sudo: no
+    user_state: lock
+    servers:
+      - webserver
+      - database
+  
+  - username: testuser106
+    password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
+    ssh_key: ssh-rsa AAAB.... test107@server
+    ssh_private_key: |
+      -----BEGIN OPENSSL PRIVATE KEY-----
+      MIIJJgIBAAKCAgEAy3pYxxWQqgLPASUFC/eWVQSNQbwpb6tFMv6xcNnAHEvKpV/U
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      hYyF3/iEM1t16QMtescPAieJ9ysSljOWb1MIPzdN9cCX7PQ/DmyHWU7M
+      -----END OPENSSL PRIVATE KEY-----
     use_sudo: no
     user_state: lock
     servers:

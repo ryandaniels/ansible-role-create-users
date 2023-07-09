@@ -45,6 +45,8 @@ script:
   - id testuser109 | grep --silent "testuser109"
   - id testuser110 | grep --silent "testuser110"
   - id testuser111 | grep --silent "testuser111"
+  - id testuser112 | grep --silent "testuser112"
+  - id testuser113 | grep --silent "testuser113"
   - sudo grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
   - sudo grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
   - grep --silent "^testuser101:" /etc/group
@@ -69,8 +71,14 @@ script:
   # Check ssh key for user was created
   - sudo cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
   - sudo cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+  - sudo cat /home/testuser113/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+  # Check ssh private key for user was created
+  - sudo ssh-keygen -lf /home/testuser112/.ssh/ansible-provisioned_ssh_key | awk '{exit $2!="SHA256:+I447SmJstX5ep1I4lTziPdI9i97PZkg9R1BukZGYio"}'
   # Check no ssh key for user was created
   - sudo test ! -f /home/testuser110/.ssh/id_rsa
+  # Check no ansible-provisioned_ssh_key was created but id_rsa was
+  - sudo test -f /home/testuser113/.ssh/id_rsa
+  - sudo test ! -f /home/testuser113/.ssh/ansible-provisioned_ssh_key
   # Check key is encrypted
   - sudo cat /home/testuser109/.ssh/id_rsa | grep --silent "ENCRYPTED"
   # Check key size is correct
@@ -90,6 +98,8 @@ script:
   # Confirm ssh key was changed and only 1 entry in file
   - sudo grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
   - sudo cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
+  # Confirm ssh private key (ansible-provisioned_ssh_key) for user was changed
+  - sudo ssh-keygen -lf /home/testuser112/.ssh/ansible-provisioned_ssh_key | awk '{exit $2!="SHA256:YpTwoSg4oG6qbhwVv55wlJ+Ny/hkwNVa39sT6y7hyzw"}'
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

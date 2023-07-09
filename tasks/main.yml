@@ -126,6 +126,7 @@
     user: "{{ item.username }}"
     key: "{{ item.ssh_key }}"
     exclusive: "{{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'no' }}"
+    path: "{{ '/home/' + item.username + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
     state: present
   when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'

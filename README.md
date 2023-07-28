@@ -93,6 +93,7 @@ File Location: vars/secret
 * **primarygid**: Primary group ID (optional). If same gid is reused on server the playbook will fail. If same duplicate group is specified with different gid, last configured will be used.
   **WARNING**: changing the primarygroup and/or primarygid of **existing** users will not change permissions of existing files belonging to that user. Also old entries will remain in /etc/group. Use with caution.
 * **groups**: Comma separated list of groups the user will be added to (appended). If group doesn't exist it will be created on the specific server. This is not the primary group (primary group is not modified)
+* **home**: path to home directory (optional, default is /home/"username")
 * **shell**: path to shell (optional, default is /bin/bash)
 * **ssh_key**: Add authorized ssh key for ssh key based authentication (optional)  
   NOTE: 1 key can go on single line, but if multiple keys, use formatting below from first example.

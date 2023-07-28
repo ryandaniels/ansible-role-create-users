@@ -55,6 +55,7 @@
     groups: "{{ item.groups | default(omit) }}"
     shell: "{{ item.shell if item.shell is defined else default_shell }}"
     createhome: yes
+    home: "{{ item.home | default('/home/' + item.username) }}"
     system: "{{ item.system | default(omit) }}"
     comment: "{{ item.comment if item.comment is defined else '' }}"
     state: present #hard-coded in case user sets state of absent. Choice made to never delete accounts!
@@ -126,7 +127,7 @@
     user: "{{ item.username }}"
     key: "{{ item.ssh_key }}"
     exclusive: "{{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'no' }}"
-    path: "{{ '/home/' + item.username + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
+    path: "{{ item.home | default('/home/' + item.username) + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
     state: present
   when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'

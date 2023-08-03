@@ -8,6 +8,14 @@
   debug: var=create_users_group_names
   when: debug_enabled_default | bool
 
+- name: set_fact - select servers
+  set_fact:
+    user_selected: "{{ users | select_by_user(inventory_hostname, create_users_group_names) }}"
+
+- name: debug variable user_selected
+  debug: var=user_selected
+  when: debug_enabled_default | bool
+
 - name: debug variable users
   debug: var=users
   when: debug_enabled_default | bool
@@ -17,7 +25,7 @@
     name: "{{ item.primarygroup }}"
     gid: "{{ item.primarygid | default(omit) }}"
     state: present
-  when: item.primarygroup is defined and item.servers | intersect(create_users_group_names)
+  when: item.primarygroup is defined and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
     label: "primarygroup: {{ item.primarygroup if item.primarygroup is defined else '' }}, primarygid: {{ item.primarygid if item.primarygid is defined else 'default' }}"  # noqa 204
@@ -28,7 +36,7 @@
   set_fact:
     groups_as_list: "{{ (groups_as_list|default([]) + item.groups.split(','))|map('trim')|list|sort|unique }}"
   loop: '{{ users }}'
-  when: item.groups is defined and item.servers | intersect(create_users_group_names)
+  when: item.groups is defined and user_selected[item.username]
   loop_control:
     label: "username: {{ item.username }}, groups_as_list: {{ item.groups if item.groups is defined else '' }}"
 
@@ -61,10 +69,10 @@
   #   expires: -1  # unlock account if locked ###Doesn't work like chage..
   #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
-  when: (item.user_state == 'present' or item.user_state == 'lock') and item.servers | intersect(create_users_group_names)
+  when: (item.user_state == 'present' or item.user_state == 'lock') and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
-    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined else ''}}, groups: {{ item.groups if item.groups is defined else ''}}, servers: {{ item.servers if item.servers is defined else '' }}, group_names: {{ create_users_group_names }}"  # noqa 204
+    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined else ''}}, groups: {{ item.groups if item.groups is defined else ''}}, servers: {{ item.servers if item.servers is defined else '' }}"  # noqa 204
 
 - name: Add users | Unlock password login (set expiry to -1)
   user:
@@ -72,7 +80,7 @@
     expires: -1  # unlock account if locked
   #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
-  when: item.user_state == 'present' and item.servers | intersect(create_users_group_names)
+  when: item.user_state == 'present' and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
@@ -86,7 +94,7 @@
 #     user: "{{ item.username }}"
 #     sp_expire: -1
 # #  command: chage -E -1 {{ item.username }} #unlock password authentication
-#   when: item.user_state == 'present' and item.servers | intersect(create_users_group_names)
+#   when: item.user_state == 'present' and user_selected[item.username]
 #   loop: '{{ users }}'
 #   loop_control:
 #     label: "username: {{item.username}}, user_state: {{ item.user_state }}"
@@ -98,7 +106,7 @@
 #     user: "{{ item.username }}"
 #     sp_expire: 0
 # #  command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
-#   when: item.user_state == 'lock' and item.servers | intersect(create_users_group_names)
+#   when: item.user_state == 'lock' and user_selected[item.username]
 #   loop: '{{ users }}'
 #   loop_control:
 #     label: "username: {{item.username}}, user_state: {{ item.user_state }}"
@@ -106,10 +114,10 @@
 - name: Lock users | Lock password & ssh key authentication
   user:
     name: "{{ item.username }}"
-    expires: 0  # lock account if not locked
+    expires: 0 #lock account if not locked
   # command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
   # register: user_results
-  when: item.user_state == 'lock' and item.servers | intersect(create_users_group_names)
+  when: item.user_state == 'lock' and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
@@ -127,7 +135,7 @@
     exclusive: "{{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'no' }}"
     path: "{{ '/home/' + item.username + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
     state: present
-  when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
+  when: item.ssh_key is defined and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}"  # noqa 204
@@ -141,7 +149,7 @@
     # generate_ssh_key_comment: "{{ item.generate_ssh_key_comment | default(omit) }}"
     # generate_ssh_key_comment: "{{ item.username }}@{{ ansible_hostname }}"
     ssh_key_comment: "{{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
-  when: item.generate_ssh_key is defined and item.servers | intersect(create_users_group_names)
+  when: item.generate_ssh_key is defined and user_selected[item.username]
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.ssh_key_bits if item.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.ssh_key_passphrase is defined else 'False' }}, generate_ssh_key_comment: {{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
@@ -157,7 +165,7 @@
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == true and item.servers | intersect(create_users_group_names)  # noqa 601
+  when: item.use_sudo|d(false)|bool == true and user_selected[item.username]  # noqa 601
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}, use_sudo_nopass: {{ item.use_sudo_nopass|d(false) }}"
@@ -173,7 +181,7 @@
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == false and item.servers | intersect(create_users_group_names)  # noqa 601
+  when: item.use_sudo|d(false)|bool == false and user_selected[item.username]  # noqa 601
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}"

@@ -149,8 +149,12 @@
     - role: ryandaniels.create_users
 
   post_tasks:
+    - name: Verify shell
+      shell: echo "$SHELL"
+      changed_when: false
+
     - name: Verify users exist
-      shell: for i in testuser1{01..11} ;do id "$i" | grep --silent "$i";done
+      shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
       changed_when: false
 
     - name: Verify password set for testuser101
@@ -205,4 +209,16 @@
       shell: grep "^testgroupdb:" /etc/group | grep --silent testuser107 || echo "success, testgroupdb not found"
       changed_when: false
 
-# Check UID is set as specified
+    - name: Verify primary group set testuser105
+      shell: id -gn testuser105 | grep --silent "group105primary"
+      changed_when: false
+
+    - name: Verify primary group set testuser106
+      shell: id -gn testuser106 | grep --silent "group106primary"
+      changed_when: false
+
+    - name: Verify primary group id set testuser106
+      shell: id -g testuser106 | grep --silent 2222
+      changed_when: false
+
+# 

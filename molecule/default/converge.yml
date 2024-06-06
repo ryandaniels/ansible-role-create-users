@@ -240,7 +240,7 @@
       changed_when: false
 
     - name: Verify /etc/sudoers testuser102
-      command: cat /etc/sudoers|grep --silent "^testuser102 "
+      shell: cat /etc/sudoers|grep --silent "^testuser102 "
       changed_when: false
 
     - name: Verify UID is set as specified

@@ -138,7 +138,7 @@
         state: present
       when: ansible_os_family == 'RedHat'
 
-    - name: Install cron (Debian).
+    - name: Install dependencies (Debian).
       apt:
         name:
           - openssh-client
@@ -149,6 +149,6 @@
     - role: ryandaniels.create_users
 
   post_tasks:
-    - name: Make sure we can connect to MySQL via Unix socket.
+    - name: Make sure user exists testuser101
       shell: id testuser101 | grep --silent "testuser101"
       changed_when: false

@@ -8,6 +8,8 @@ driver:
   name: docker
 platforms:
   - name: instance
+    groups:
+      - webserver
     image: "geerlingguy/docker-${MOLECULE_DISTRO:-rockylinux8}-ansible:latest"
     command: ${MOLECULE_DOCKER_COMMAND:-""}
     volumes:

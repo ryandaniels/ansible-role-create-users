@@ -151,7 +151,11 @@
   post_tasks:
     - name: Verify shell
       shell: echo "$SHELL"
+      register: stat_shell
       changed_when: false
+
+    - debug:
+        var: stat_shell
 
     - name: Verify users exist
       shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done

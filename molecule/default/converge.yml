@@ -124,6 +124,27 @@
           - database
           - monitoring
 
+# apt-get install openssh-client
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+
+    - name: Install dependencies (RedHat).
+      yum:
+        name:
+          - openssh
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install cron (Debian).
+      apt:
+        name:
+          - openssh-client
+        state: present
+      when: ansible_os_family == 'Debian'
+
   roles:
     - role: ryandaniels.create_users
 

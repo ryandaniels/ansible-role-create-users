@@ -42,8 +42,8 @@ jobs:
     strategy:
       matrix:
         distro:
-          # RHEL 8 / Rocky 8 big nope with latest Ansible 2.17+: https://github.com/ansible/ansible/issues/82068#issuecomment-2135279350
-          - rockylinux8
+          # RHEL 8 / Rocky 8 will never work with latest Ansible 2.17+: https://github.com/ansible/ansible/issues/82068#issuecomment-2135279350
+          # - rockylinux8
           - rockylinux9
           - ubuntu2204
           # - ubuntu2004
@@ -62,7 +62,8 @@ jobs:
           python-version: '3.x'
 
       - name: Install test dependencies.
-        run: pip3 install ansible==2.9 molecule molecule-plugins[docker] docker
+        run: pip3 install ansible molecule molecule-plugins[docker] docker
+        # run: pip3 install ansible==2.9 molecule molecule-plugins[docker] docker
 
       - name: Run Molecule tests.
         run: molecule test

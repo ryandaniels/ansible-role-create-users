@@ -149,6 +149,60 @@
     - role: ryandaniels.create_users
 
   post_tasks:
-    - name: Make sure user exists testuser101
-      shell: id testuser101 | grep --silent "testuser101"
+    - name: Verify users exist
+      shell: for i in testuser1{01..11} ;do id "$i" | grep --silent "$i";done
       changed_when: false
+
+    - name: Verify password set for testuser101
+      shell: grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
+      changed_when: false
+
+    - name: Verify password set for testuser102
+      shell: grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
+      changed_when: false
+
+    - name: Verify group testuser101
+      command: grep --silent "^testuser101:" /etc/group
+      changed_when: false
+
+    - name: Verify home dir testuser101
+      shell: ls -lgd /home/testuser101 | awk '{exit $3!="testuser101"}'
+      changed_when: false
+
+    - name: Verify authorized_keys testuser101
+      shell: ls -lg /home/testuser101/.ssh/authorized_keys | awk '{exit $3!="testuser101"}'
+      changed_when: false
+
+    - name: Verify authorized_keys testuser101 has 2
+      shell: cat /home/testuser101/.ssh/authorized_keys | wc -l | grep --silent "2"
+      changed_when: false
+
+    - name: Verify account not expired testuser101
+      shell: chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
+      changed_when: false
+
+    - name: Verify account expired testuser105
+      shell: chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
+      changed_when: false
+
+    - name: Verify /etc/sudoers testuser102
+      command: cat /etc/sudoers|grep --silent "^testuser102 "
+      changed_when: false
+
+    - name: Verify UID is set as specified
+      shell: grep sshuser /etc/passwd | awk -F":" '{exit $3!="1099"}'
+      changed_when: false
+
+    - name: Verify group(s) are set for users testuser106
+      shell: grep "^groupcommon:" /etc/group | grep --silent testuser106
+      changed_when: false
+
+    - name: Verify group(s) are set for users testuser106
+      shell: grep "^testgroupweb:" /etc/group | grep --silent testuser107
+      changed_when: false
+
+    - name: Verify group not set on webserver
+      shell: grep "^testgroupdb:" /etc/group | grep --silent testuser107 || echo "success, testgroupdb not found"
+      changed_when: false
+
+# Check UID is set as specified

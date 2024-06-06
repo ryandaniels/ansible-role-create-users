@@ -149,16 +149,60 @@
     - role: ryandaniels.create_users
 
   post_tasks:
-    - name: Verify shell
-      shell: echo "$SHELL"
-      register: stat_shell
+    # - name: Verify shell
+    #   shell: echo "$SHELL"
+    #   register: stat_shell
+    #   changed_when: false
+
+    # - debug:
+    #     var: stat_shell
+
+    # - name: Verify users exist
+    #   shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
+    #   changed_when: false
+
+    - name: Verify users exist testuser101
+      shell: id testuser101 | grep --silent testuser101;done
       changed_when: false
 
-    - debug:
-        var: stat_shell
+    - name: Verify users exist testuser102
+      shell: id testuser102 | grep --silent testuser102;done
+      changed_when: false
 
-    - name: Verify users exist
-      shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
+    - name: Verify users exist testuser103
+      shell: id testuser103 | grep --silent testuser103;done
+      changed_when: false
+
+    - name: Verify users exist testuser104
+      shell: id testuser104 | grep --silent testuser104;done
+      changed_when: false
+
+    - name: Verify users exist testuser105
+      shell: id testuser105 | grep --silent testuser105;done
+      changed_when: false
+
+    - name: Verify users exist testuser106
+      shell: id testuser106 | grep --silent testuser106;done
+      changed_when: false
+
+    - name: Verify users exist testuser107
+      shell: id testuser107 | grep --silent testuser107;done
+      changed_when: false
+
+    - name: Verify users exist testuser108
+      shell: id testuser108 | grep --silent testuser108;done
+      changed_when: false
+
+    - name: Verify users exist testuser109
+      shell: id testuser109 | grep --silent testuser109;done
+      changed_when: false
+
+    - name: Verify users exist testuser110
+      shell: id testuser110 | grep --silent testuser110;done
+      changed_when: false
+
+    - name: Verify users exist testuser111
+      shell: id testuser111 | grep --silent testuser111;done
       changed_when: false
 
     - name: Verify password set for testuser101

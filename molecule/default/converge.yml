@@ -272,8 +272,13 @@
       changed_when: false
 
     - name: Verify ssh key for user was created testuser108
-      shell: cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+      # shell: cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"
+      shell: cat /home/testuser108/.ssh/id_rsa
       changed_when: false
+      register: stat_sshkey_testuser108
+
+    - debug:
+        var: stat_sshkey_testuser108
 
     - name: Verify ssh key for user was created testuser109
       shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN RSA PRIVATE KEY"

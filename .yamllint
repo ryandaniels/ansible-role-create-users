@@ -2,9 +2,7 @@
 extends: default
 
 rules:
-  line-length:
-    max: 300
-    level: warning
+  line-length: disable
 
 ignore: |
   .travis.yml

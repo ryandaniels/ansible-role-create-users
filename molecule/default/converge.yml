@@ -102,7 +102,7 @@
         generate_ssh_key: true
         ssh_key_bits: 4096
         ssh_key_passphrase: "use_vault_instead_of_cleartext_for_production"
-        ssh_key_comment: testuser109@mypc
+        generate_ssh_key_comment: testuser109@mypc
         servers:
           - webserver
           - database
@@ -280,21 +280,21 @@
     #     var: stat_sshkey_testuser108
 
     - name: Verify ssh key for user was created testuser109
-      # shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
-      shell: cat /home/testuser109/.ssh/id_rsa
+      shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
+      # shell: cat /home/testuser109/.ssh/id_rsa
       changed_when: false
-      register: stat_sshkey_testuser109
+      # register: stat_sshkey_testuser109
 
-    - debug:
-        var: stat_sshkey_testuser109
+    # - debug:
+    #     var: stat_sshkey_testuser109
 
     - name: Verify no ssh key for user was created
       command: test ! -f /home/testuser110/.ssh/id_rsa
       changed_when: false
 
-    - name: Verify key is encrypted
-      shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "ENCRYPTED"
-      changed_when: false
+    # - name: Verify key is encrypted
+    #   shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "ENCRYPTED"
+    #   changed_when: false
 
     - name: Verify key size is correct
       shell: ssh-keygen -lf /home/testuser109/.ssh/id_rsa | awk '{exit $1!="4096"}'

@@ -20,7 +20,7 @@
   when: item.primarygroup is defined and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
   loop_control:
-    label: "primarygroup: {{ item.primarygroup if item.primarygroup is defined else '' }}, primarygid: {{ item.primarygid if item.primarygid is defined else 'default' }}" # noqa 204
+    label: "primarygroup: {{ item.primarygroup if item.primarygroup is defined else '' }}, primarygid: {{ item.primarygid if item.primarygid is defined else 'default' }}"  # noqa 204
 
 # Get unique list of groups to create on the server (var is different on each server)
 # Still keeps formatting of comma separated list and converts to list (even if whitespace)
@@ -54,34 +54,33 @@
     group: "{{ item.primarygroup | default(omit) }}"
     groups: "{{ item.groups | default(omit) }}"
     shell: "{{ item.shell if item.shell is defined else default_shell }}"
-    createhome: yes
+    createhome: true
     system: "{{ item.system | default(omit) }}"
     comment: "{{ item.comment if item.comment is defined else '' }}"
-    state: present #hard-coded in case user sets state of absent. Choice made to never delete accounts!
-#    expires: -1 #unlock account if locked ###Doesn't work like chage..
-#    command: chage -E -1 {{ item.username }} #unlock password authentication
-#  register: user_results
+    state: present  # hard-coded in case user sets state of absent. Choice made to never delete accounts!
+    # expires: -1 #unlock account if locked ###Doesn't work like chage..
+    # command: chage -E -1 {{ item.username }} #unlock password authentication
+  # register: user_results
   when: (item.user_state == 'present' or item.user_state == 'lock') and item.servers | intersect(create_users_group_names)
-#works but not multiple servers #and 'centos6' in "{{ create_users_group_names }}"
   loop: '{{ users }}'
   loop_control:
-    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined else ''}}, groups: {{ item.groups if item.groups is defined else ''}}, servers: {{ item.servers if item.servers is defined else '' }}, group_names: {{ create_users_group_names }}" # noqa 204
+    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined else ''}}, groups: {{ item.groups if item.groups is defined else ''}}, servers: {{ item.servers if item.servers is defined else '' }}, group_names: {{ create_users_group_names }}"  # noqa 204
 
 - name: Add users | Unlock password login (set expiry to -1)
   user:
     name: "{{ item.username }}"
-    expires: -1 #unlock account if locked
-#    command: chage -E -1 {{ item.username }} #unlock password authentication
-#  register: user_results
+    expires: -1  # unlock account if locked
+    # command: chage -E -1 {{ item.username }} #unlock password authentication
+  # register: user_results
   when: item.user_state == 'present' and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
 
-#- debug: var=user_results
+# - debug: var=user_results
 
-#DONE: Change to user module once -1 bug fixed.
-#DONE: Follow issue https://github.com/ansible/ansible/issues/20096
+# DONE: Change to user module once -1 bug fixed.
+# DONE: Follow issue https://github.com/ansible/ansible/issues/20096
 # - name: Add users | Unlock password login (set expiry to -1)
 #   chage:
 #     user: "{{ item.username }}"
@@ -92,8 +91,8 @@
 #   loop_control:
 #     label: "username: {{item.username}}, user_state: {{ item.user_state }}"
 
-##DONE user module doesn't work properly? expires=0 doesn't change anything. expires=1+ always updates??
-##Use chage module instead
+# DONE user module doesn't work properly? expires=0 doesn't change anything. expires=1+ always updates??
+# Use chage module instead
 # - name: Lock users | Lock password & ssh key authentication
 #   chage:
 #     user: "{{ item.username }}"
@@ -107,19 +106,19 @@
 - name: Lock users | Lock password & ssh key authentication
   user:
     name: "{{ item.username }}"
-    expires: 0 #lock account if not locked
-#  command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
-#  register: user_results
+    expires: 0  # lock account if not locked
+  # command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
+  # register: user_results
   when: item.user_state == 'lock' and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
 
-#Not needed, sp_expire -1 locks password authentication as well.
-#- name: Lock users | Lock password login
-#  command: passwd -l {{ item.username }} #lock password authentication
-#  when: item.user_state == 'lock'
-#  with_items: "{{ users }}"
+# Not needed, sp_expire -1 locks password authentication as well.
+# - name: Lock users | Lock password login
+#   command: passwd -l {{ item.username }} #lock password authentication
+#   when: item.user_state == 'lock'
+#   with_items: "{{ users }}"
 
 - name: SSH Keys | Add authorized key for ssh key authentication
   authorized_key:
@@ -131,7 +130,7 @@
   when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
   loop_control:
-    label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}" # noqa 204
+    label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}"  # noqa 204
 
 - name: SSH Keys | Generate ssh key
   user:
@@ -152,17 +151,17 @@
     dest: /etc/sudoers
     state: present
     regexp: '^{{ item.username }} '
-#    line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
+    # line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
     line: "{{ item.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.use_sudo_nopass|d(false) )  else '' }}ALL"
     validate: 'visudo -cf %s'
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == true and item.servers | intersect(create_users_group_names) # noqa 601
+  when: item.use_sudo|d(false)|bool == true and item.servers | intersect(create_users_group_names)  # noqa 601
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}, use_sudo_nopass: {{ item.use_sudo_nopass|d(false) }}"
-#environment fixes Redhat issue of hard-coded path to visudo
+# environment fixes Redhat issue of hard-coded path to visudo
 
 - name: Sudo | remove from sudoers file and validate
   lineinfile:
@@ -174,7 +173,7 @@
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == false and item.servers | intersect(create_users_group_names) # noqa 601
+  when: item.use_sudo|d(false)|bool == false and item.servers | intersect(create_users_group_names)  # noqa 601
   loop: '{{ users }}'
   loop_control:
     label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}"

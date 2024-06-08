@@ -1,0 +1,265 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    debug_enabled_default: false
+
+    users:
+      - username: testuser101
+        password: $6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60
+        update_password: on_create
+        comment: Test User 100
+        shell: /bin/bash
+        ssh_key: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8crAHG/a9QBD4zO0ZHIjdRXy+ySKviXVCMIJ3/NMIAAzDyIsPKToUJmIApHHHF1/hBllqzBSkPEMwgFbXjyqTeVPHF8V0iq41n0kgbulJG testuser101@server1
+          ssh-rsa AAAA.... testuser101@server2
+        exclusive_ssh_key: true
+        use_sudo: false
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser102
+        password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
+        update_password: always
+        comment: Test User 101
+        groups: testnew102
+        shell: /bin/sh
+        use_sudo: true
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser103
+        password: $6$wBxBAqRmG6O$gPbg9hYShkuIe3YKMFujwiKsPKZHNFwoK4yCyTOlploljz53YSoPdCn9P5k8Qm0z062Q.8hvJ6DnnQQjwtrnS0
+        update_password: always
+        use_sudo: false
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser104
+        ssh_key: ssh-rsa AAAB.... test104@server
+        exclusive_ssh_key: false
+        use_sudo: false
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser105
+        uid: 1099
+        password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
+        primarygroup: group105primary
+        ssh_key: ssh-rsa AAAB.... test107@server
+        use_sudo: false
+        user_state: lock
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser106
+        user_state: present
+        primarygroup: group106primary
+        primarygid: 2222
+        groups: groupcommon
+        servers:
+          - webserver
+          - database
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupweb
+        servers:
+          - webserver
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupdb
+        servers:
+          - database
+
+      - username: testuser108
+        user_state: present
+        generate_ssh_key: true
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser109
+        user_state: present
+        generate_ssh_key: true
+        ssh_key_bits: 4096
+        ssh_key_passphrase: "use_vault_instead_of_cleartext_for_production"
+        generate_ssh_key_comment: testuser109@mypc
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser110
+        user_state: present
+        generate_ssh_key: false
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser111
+        user_state: present
+        system: true
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+      changed_when: false
+
+    - name: Install dependencies (RedHat).
+      yum:
+        name:
+          - openssh
+        state: present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install dependencies (Debian).
+      apt:
+        name:
+          - openssh-client
+        state: present
+      when: ansible_os_family == 'Debian'
+
+  roles:
+    - role: ryandaniels.create_users
+
+  post_tasks:
+    # - name: Verify shell
+    #   shell: echo "$SHELL"
+    #   register: stat_shell
+    #   changed_when: false
+
+    # - debug:
+    #     var: stat_shell
+
+    - name: Verify users exist
+      shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Verify password set for testuser101
+      shell: grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
+      changed_when: false
+
+    - name: Verify password set for testuser102
+      shell: grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRntVsTcy1rnsvw.6tBquOhX7Sb26jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
+      changed_when: false
+
+    - name: Verify group testuser101
+      command: grep --silent "^testuser101:" /etc/group
+      changed_when: false
+
+    - name: Verify home dir testuser101
+      shell: ls -lgd /home/testuser101 | awk '{exit $3!="testuser101"}'
+      changed_when: false
+
+    - name: Verify authorized_keys testuser101
+      shell: ls -lg /home/testuser101/.ssh/authorized_keys | awk '{exit $3!="testuser101"}'
+      changed_when: false
+
+    - name: Verify authorized_keys testuser101 has 2
+      shell: cat /home/testuser101/.ssh/authorized_keys | wc -l | grep --silent "2"
+      changed_when: false
+
+    - name: Verify account not expired testuser101
+      shell: chage -l testuser101 | grep "Account expires" | awk '{exit $4!="never"}'
+      changed_when: false
+
+    - name: Verify account expired testuser105
+      shell: chage -l testuser105 | grep "Account expires" | awk '{exit $4!="Jan"}'
+      changed_when: false
+
+    - name: Verify /etc/sudoers testuser102
+      shell: cat /etc/sudoers|grep --silent "^testuser102 "
+      changed_when: false
+
+    - name: Verify UID is set as specified
+      shell: grep sshuser /etc/passwd | awk -F":" '{exit $3!="1099"}'
+      changed_when: false
+
+    - name: Verify group(s) are set for users testuser106
+      shell: grep "^groupcommon:" /etc/group | grep --silent testuser106
+      changed_when: false
+
+    - name: Verify group(s) are set for users testuser106
+      shell: grep "^testgroupweb:" /etc/group | grep --silent testuser107
+      changed_when: false
+
+    - name: Verify group not set on webserver
+      shell: grep "^testgroupdb:" /etc/group | grep --silent testuser107 || echo "success, testgroupdb not found"
+      changed_when: false
+
+    - name: Verify primary group set testuser105
+      shell: id -gn testuser105 | grep --silent "group105primary"
+      changed_when: false
+
+    - name: Verify primary group set testuser106
+      shell: id -gn testuser106 | grep --silent "group106primary"
+      changed_when: false
+
+    - name: Verify primary group id set testuser106
+      shell: id -g testuser106 | grep --silent 2222
+      changed_when: false
+
+    - name: Verify ssh key for user was created testuser108
+      shell: cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
+      # shell: cat /home/testuser108/.ssh/id_rsa
+      changed_when: false
+      # register: stat_sshkey_testuser108
+
+    # - debug:
+    #     var: stat_sshkey_testuser108
+
+    - name: Verify ssh key for user was created testuser109
+      shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
+      # shell: cat /home/testuser109/.ssh/id_rsa
+      changed_when: false
+      # register: stat_sshkey_testuser109
+
+    # - debug:
+    #     var: stat_sshkey_testuser109
+
+    - name: Verify no ssh key for user was created
+      command: test ! -f /home/testuser110/.ssh/id_rsa
+      changed_when: false
+
+    # - name: Verify key is encrypted
+    #   shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "ENCRYPTED"
+    #   changed_when: false
+
+    - name: Verify key size is correct
+      shell: ssh-keygen -lf /home/testuser109/.ssh/id_rsa | awk '{exit $1!="4096"}'
+      changed_when: false
+
+    - name: Verify user is not system account
+      shell: id -u testuser101 | awk '{exit ($1<1000)?"0":"1"}' || echo "success, not system account"
+      changed_when: false
+
+    - name: Verify user is system account
+      shell: id -u testuser111 | awk '{exit ($1<1000)?"0":"1"}'
+      changed_when: false

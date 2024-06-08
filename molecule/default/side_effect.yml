@@ -15,8 +15,8 @@
         ssh_key: |
           ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8crAHG/a9QBD4zO0ZHIjdRXy+ySKviXVCMIJ3/NMIAAzDyIsPKToUJmIApHHHF1/hBllqzBSkPEMwgFbXjyqTeVPHF8V0iq41n0kgbulJG testuser101@server1
           ssh-rsa AAAA.... testuser101@server2
-        exclusive_ssh_key: yes
-        use_sudo: no
+        exclusive_ssh_key: true
+        use_sudo: false
         user_state: present
         servers:
           - webserver
@@ -29,7 +29,7 @@
         comment: Test User 101
         groups: testnew102
         shell: /bin/sh
-        use_sudo: yes
+        use_sudo: true
         user_state: present
         servers:
           - webserver
@@ -38,7 +38,7 @@
 
       - username: testuser103
         update_password: always
-        use_sudo: no
+        use_sudo: false
         user_state: present
         servers:
           - webserver
@@ -47,8 +47,8 @@
 
       - username: testuser104
         ssh_key: ssh-rsa AAABNEW.... test104@server
-        exclusive_ssh_key: yes
-        use_sudo: no
+        exclusive_ssh_key: true
+        use_sudo: false
         user_state: present
         servers:
           - webserver
@@ -60,7 +60,7 @@
         password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
         primarygroup: group105primary
         ssh_key: ssh-rsa AAAB.... test107@server
-        use_sudo: no
+        use_sudo: false
         user_state: lock
         servers:
           - webserver

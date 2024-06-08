@@ -280,8 +280,13 @@
     #     var: stat_sshkey_testuser108
 
     - name: Verify ssh key for user was created testuser109
-      shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
+      # shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
+      shell: cat /home/testuser109/.ssh/id_rsa
       changed_when: false
+      register: stat_sshkey_testuser109
+
+    - debug:
+        var: stat_sshkey_testuser109
 
     - name: Verify no ssh key for user was created
       command: test ! -f /home/testuser110/.ssh/id_rsa

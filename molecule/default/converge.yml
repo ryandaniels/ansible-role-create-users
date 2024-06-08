@@ -124,7 +124,6 @@
           - database
           - monitoring
 
-# apt-get install openssh-client
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=yes cache_valid_time=600
@@ -275,10 +274,10 @@
       shell: cat /home/testuser108/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
       # shell: cat /home/testuser108/.ssh/id_rsa
       changed_when: false
-      register: stat_sshkey_testuser108
+      # register: stat_sshkey_testuser108
 
-    - debug:
-        var: stat_sshkey_testuser108
+    # - debug:
+    #     var: stat_sshkey_testuser108
 
     - name: Verify ssh key for user was created testuser109
       shell: cat /home/testuser109/.ssh/id_rsa | grep --silent "BEGIN OPENSSH PRIVATE KEY"
@@ -303,5 +302,3 @@
     - name: Verify user is system account
       shell: id -u testuser111 | awk '{exit ($1<1000)?"0":"1"}'
       changed_when: false
-
-#

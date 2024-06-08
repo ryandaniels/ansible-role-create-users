@@ -106,7 +106,7 @@
 - name: Lock users | Lock password & ssh key authentication
   user:
     name: "{{ item.username }}"
-    expires: 0 #lock account if not locked
+    expires: 0  # lock account if not locked
   # command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
   # register: user_results
   when: item.user_state == 'lock' and item.servers | intersect(create_users_group_names)
@@ -115,10 +115,10 @@
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
 
 # Not needed, sp_expire -1 locks password authentication as well.
-#- name: Lock users | Lock password login
-#  command: passwd -l {{ item.username }} #lock password authentication
-#  when: item.user_state == 'lock'
-#  with_items: "{{ users }}"
+# - name: Lock users | Lock password login
+#   command: passwd -l {{ item.username }} #lock password authentication
+#   when: item.user_state == 'lock'
+#   with_items: "{{ users }}"
 
 - name: SSH Keys | Add authorized key for ssh key authentication
   authorized_key:
@@ -151,7 +151,7 @@
     dest: /etc/sudoers
     state: present
     regexp: '^{{ item.username }} '
-#    line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
+    # line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
     line: "{{ item.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.use_sudo_nopass|d(false) )  else '' }}ALL"
     validate: 'visudo -cf %s'
   environment:

@@ -1,0 +1,141 @@
+---
+- name: Converge2
+  hosts: all
+  become: true
+
+  vars:
+    debug_enabled_default: false
+
+    users:
+      - username: testuser101
+        password: $6$/y5RGZnFaD3f$96xVdOAnldEtS__NEW_SHOULD_NOT_CHANGE__bFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60
+        update_password: on_create
+        comment: Test User 100
+        shell: /bin/bash
+        ssh_key: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8crAHG/a9QBD4zO0ZHIjdRXy+ySKviXVCMIJ3/NMIAAzDyIsPKToUJmIApHHHF1/hBllqzBSkPEMwgFbXjyqTeVPHF8V0iq41n0kgbulJG testuser101@server1
+          ssh-rsa AAAA.... testuser101@server2
+        exclusive_ssh_key: yes
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser102
+        password: $6$F/KXFzMa$ZIDqtYtM6sOC3UmRnt__NEW_SHOULD_CHANGE__6jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1
+        update_password: always
+        comment: Test User 101
+        groups: testnew102
+        shell: /bin/sh
+        use_sudo: yes
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser103
+        update_password: always
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser104
+        ssh_key: ssh-rsa AAABNEW.... test104@server
+        exclusive_ssh_key: yes
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser105
+        uid: 1099
+        password: $6$XEnyI5UYSw$Rlc6tXtECtqdJ3uFitrbBlec1/8Fx2obfgFST419ntJqaX8sfPQ9xR7vj7dGhQsfX8zcSX3tumzR7/vwlIH6p/
+        primarygroup: group105primary
+        ssh_key: ssh-rsa AAAB.... test107@server
+        use_sudo: no
+        user_state: lock
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser106
+        user_state: present
+        primarygroup: group106primary
+        primarygid: 2222
+        groups: groupcommon
+        servers:
+          - webserver
+          - database
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupweb
+        servers:
+          - webserver
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupdb
+        servers:
+          - database
+
+  # pre_tasks:
+  #   - name: Update apt cache.
+  #     apt: update_cache=yes cache_valid_time=600
+  #     when: ansible_os_family == 'Debian'
+  #     changed_when: false
+
+  #   - name: Install dependencies (RedHat).
+  #     yum:
+  #       name:
+  #         - openssh
+  #       state: present
+  #     when: ansible_os_family == 'RedHat'
+
+  #   - name: Install dependencies (Debian).
+  #     apt:
+  #       name:
+  #         - openssh-client
+  #       state: present
+  #     when: ansible_os_family == 'Debian'
+
+  roles:
+    - role: ryandaniels.create_users
+
+  post_tasks:
+    # - name: Verify shell
+    #   shell: echo "$SHELL"
+    #   register: stat_shell
+    #   changed_when: false
+
+    # - debug:
+    #     var: stat_shell
+
+    - name: Verify password not changed testuser101
+      shell: grep testuser101 /etc/shadow | awk -F":" '{exit $2!="$6$/y5RGZnFaD3f$96xVdOAnldEtSxivDY02h.DwPTrJgGQl8/MTRRrFAwKTYbFymeKH/1Rxd3k.RQfpgebM6amLK3xAaycybdc.60"}'
+      changed_when: false
+
+    - name: Verify password changed testuser102
+      shell: grep testuser102 /etc/shadow | awk -F":" '{exit $2!="$6$F/KXFzMa$ZIDqtYtM6sOC3UmRnt__NEW_SHOULD_CHANGE__6jxskXpve8l6DYsQyI1FT8N5I5cL0YkzW7bLbSCMtUw1"}'
+      changed_when: false
+
+    - name: Verify locked testuser103
+      shell: grep testuser103 /etc/shadow | awk -F":" '{exit $2!="!"}'
+      changed_when: false
+
+    - name: Verify ssh key was changed
+      shell: grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
+      changed_when: false
+
+    - name: Verify only 1 entry in authorized_keys file
+      shell: cat /home/testuser104/.ssh/authorized_keys | wc -l | grep --silent "1"
+      changed_when: false

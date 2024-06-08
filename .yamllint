@@ -4,6 +4,6 @@ extends: default
 rules:
   line-length: disable
 
-ignore: |
-  .travis.yml
-  tests/*
+# ignore: |
+#   .travis.yml
+#   tests/*

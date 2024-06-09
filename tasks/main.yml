@@ -114,7 +114,7 @@
 - name: Lock users | Lock password & ssh key authentication
   user:
     name: "{{ item.username }}"
-    expires: 0 #lock account if not locked
+    expires: 0  # lock account if not locked
   # command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
   # register: user_results
   when: item.user_state == 'lock' and user_selected[item.username]

@@ -32,8 +32,8 @@
         use_sudo: true
         user_state: present
         servers:
-          - webserver
           - database
+          - webserver
           - monitoring
 
       - username: testuser103
@@ -42,9 +42,9 @@
         use_sudo: false
         user_state: present
         servers:
-          - webserver
           - database
           - monitoring
+          - webserver
 
       - username: testuser104
         ssh_key: ssh-rsa AAAB.... test104@server
@@ -70,12 +70,19 @@
 
       - username: testuser106
         user_state: present
+        primarygroup: group106primarydb
+        primarygid: 2222
+        groups: groupcommon
+        servers:
+          - database
+
+      - username: testuser106
+        user_state: present
         primarygroup: group106primary
         primarygid: 2222
         groups: groupcommon
         servers:
           - webserver
-          - database
 
       - username: testuser107
         user_state: present

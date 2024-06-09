@@ -257,6 +257,14 @@
       shell: grep "^groupcommon:" /etc/group | grep --silent testuser106
       changed_when: false
 
+    - name: Verify group(s) are set for users testuser107 (temp for debug)
+      shell: grep "testgroupweb:" /etc/group
+      register: stat_groups_set_testuser107
+      changed_when: false
+
+    - debug:
+        var: stat_groups_set_testuser107
+
     - name: Verify group(s) are set for users testuser107
       shell: grep "^testgroupweb:" /etc/group | grep --silent testuser107
       changed_when: false

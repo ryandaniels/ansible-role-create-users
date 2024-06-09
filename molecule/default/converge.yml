@@ -157,7 +157,7 @@
     #     var: stat_shell
 
     - name: Verify users exist
-      shell: for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
+      shell: set -o pipefail && for i in testuser1{01..11};do id "$i" | grep --silent "$i";done
       args:
         executable: /bin/bash
       changed_when: false

@@ -1,6 +1,6 @@
 # ansible-role-create-users
 
-[![CI](https://github.com/ryandaniels/ansible-role-create-users/workflows/CI/badge.svg?event=push)](https://github.com/ryandaniels/ansible-role-create-users/actions?query=workflow%3ACI)
+[![CI](https://github.com/ryandaniels/ansible-role-create-users/workflows/CI/badge.svg)](https://github.com/ryandaniels/ansible-role-create-users/actions?query=workflow%3ACI)
 
 Role to manage users on linux.  
 Manage users in the user list config file (list is in the file vars/secret).  

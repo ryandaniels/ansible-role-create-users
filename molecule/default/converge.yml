@@ -206,7 +206,7 @@
       shell: grep "^groupcommon:" /etc/group | grep --silent testuser106
       changed_when: false
 
-    - name: Verify group(s) are set for users testuser106
+    - name: Verify group(s) are set for users testuser107
       shell: grep "^testgroupweb:" /etc/group | grep --silent testuser107
       changed_when: false
 

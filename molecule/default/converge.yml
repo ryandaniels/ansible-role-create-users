@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    debug_enabled_default: false
+    debug_enabled_default: true
 
     users:
       - username: testuser101

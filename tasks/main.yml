@@ -58,8 +58,8 @@
     system: "{{ item.system | default(omit) }}"
     comment: "{{ item.comment if item.comment is defined else '' }}"
     state: present  # hard-coded in case user sets state of absent. Choice made to never delete accounts!
-    # expires: -1 #unlock account if locked ###Doesn't work like chage..
-    # command: chage -E -1 {{ item.username }} #unlock password authentication
+  #   expires: -1  # unlock account if locked ###Doesn't work like chage..
+  #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
   when: (item.user_state == 'present' or item.user_state == 'lock') and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'
@@ -70,7 +70,7 @@
   user:
     name: "{{ item.username }}"
     expires: -1  # unlock account if locked
-    # command: chage -E -1 {{ item.username }} #unlock password authentication
+  #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
   when: item.user_state == 'present' and item.servers | intersect(create_users_group_names)
   loop: '{{ users }}'

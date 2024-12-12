@@ -19,7 +19,8 @@
         use_sudo: false
         user_state: present
         servers:
-          - webserver
+          - instance
+          # - webserver
           - database
           - monitoring
 

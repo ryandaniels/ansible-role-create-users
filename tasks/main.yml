@@ -2,7 +2,7 @@
 
 - name: set_fact - add all to group_names
   set_fact:
-    create_users_group_names: "{{ group_names|default([]) + ['all'] }}"
+    create_users_group_names: "{{ group_names|default([]) + ['all'] + [inventory_hostname] }}"
 
 - name: debug variable create_users_group_names
   debug: var=create_users_group_names

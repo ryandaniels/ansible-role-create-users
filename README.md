@@ -5,7 +5,9 @@
 Role to manage users on linux.  
 Manage users in the user list config file (list is in the file vars/secret).  
 Add users (with specific uid), change passwords, lock/unlock user accounts, manage sudo access (per user), add ssh key(s) for sshkey based authentication, set user's primary group and gid, add user (append) to group(s) and group will be created if doesn't exist.  
-This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file. `all` is also supported to apply to every host in an inventory file.  
+This is done on a per "group" basis (Ansible group variables), as set in the config file. The group comes from the Ansible group as set for a server in the inventory file.  
+  `all` is also supported to apply to every host in an inventory file.  
+  Special variable `inventory_hostname` is also supported to apply to just one server in an inventory file.  
 
 More detailed example can be found in the blog post: [User Management with Ansible](https://ryandaniels.ca/blog/ansible-user-management/)  
 

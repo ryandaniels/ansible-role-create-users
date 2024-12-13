@@ -5,3 +5,4 @@ default_update_password: on_create
 default_shell: /bin/bash
 # default_generate_ssh_key_comment: "ansible-generated on {{ ansible_hostname }}"
 default_generate_ssh_key_comment: "ansible-generated for {{ item.username }}@{{ ansible_hostname }}"
+default_disable_ssh_password_authentication: "false"

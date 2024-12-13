@@ -15,7 +15,7 @@ Note: Deleting users is not done on purpose.
 
 ## Distros tested
 
-* Ubuntu 22.04, 20.04, 18.04, 16.04
+* Ubuntu 24.04, 22.04, 20.04, 18.04, 16.04
 * CentOS / RHEL: 9.1, 8.x, 7.x, 6.5, 5.9
 
 ## Dependencies

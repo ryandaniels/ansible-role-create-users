@@ -46,7 +46,8 @@ jobs:
           # RHEL 8 / Rocky 8 will never work with latest Ansible 2.17+: https://github.com/ansible/ansible/issues/82068#issuecomment-2135279350
           # - rockylinux8
           - rockylinux9
-          - ubuntu2204
+          - ubuntu2404
+          # - ubuntu2204
           # - ubuntu2004
           - debian12
           # - debian11

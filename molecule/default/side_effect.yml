@@ -110,7 +110,8 @@
 
   roles:
     # - role: ryandaniels.create_users
-    - role: ../../../create-users
+    # - role: ../../../create-users
+    - role: ../../../
 
   post_tasks:
     # - name: Verify shell

@@ -45,7 +45,8 @@ jobs:
         distro:
           # RHEL 8 / Rocky 8 will never work with latest Ansible 2.17+: https://github.com/ansible/ansible/issues/82068#issuecomment-2135279350
           # - rockylinux8
-          - rockylinux9
+          # TODO: enable rockylinux9 after fixed https://github.com/geerlingguy/docker-rockylinux9-ansible/issues/6
+          # - rockylinux9
           - ubuntu2404
           # - ubuntu2204
           # - ubuntu2004

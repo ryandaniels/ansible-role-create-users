@@ -156,7 +156,6 @@
 
   roles:
     # - role: ryandaniels.create_users
-    # - role: ../../../create-users
     - role: ../../../
 
   post_tasks:

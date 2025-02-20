@@ -109,8 +109,8 @@
   #     when: ansible_os_family == 'Debian'
 
   roles:
-    - role: ryandaniels.create_users
-    # - role: ../../../create-users
+    # - role: ryandaniels.create_users
+    - role: ../../../create-users
 
   post_tasks:
     # - name: Verify shell

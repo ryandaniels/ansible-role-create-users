@@ -20,7 +20,8 @@ Note: Deleting users is not done on purpose.
 
 ## Dependencies
 
-Requires Ansible 2.6 (due to previous [bug 20096](https://github.com/ansible/ansible/issues/20096) with un-expiring users)
+Requires Ansible >2.9. Test on Ansible 2.16 (versions of this Ansible Role `>=v2`).  
+If Ansible 2.9 is required, the branch `ansible29` still works (versions of this Ansible Role `<v2`).  
 
 ## ansible-vault
 

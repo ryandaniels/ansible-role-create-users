@@ -134,7 +134,9 @@
 
   pre_tasks:
     - name: Update apt cache.
-      apt: update_cache=yes cache_valid_time=600
+      apt:
+        update_cache: true
+        cache_valid_time: 600
       when: ansible_os_family == 'Debian'
       changed_when: false
 
@@ -154,6 +156,7 @@
 
   roles:
     - role: ryandaniels.create_users
+    # - role: ../../../create-users
 
   post_tasks:
     # - name: Verify shell

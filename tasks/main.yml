@@ -1,43 +1,46 @@
 ---
+- name: Set_fact - add all to group_names
+  ansible.builtin.set_fact:
+    create_users_group_names: "{{ group_names | default([]) + ['all'] + [inventory_hostname] }}"
 
-- name: set_fact - add all to group_names
-  set_fact:
-    create_users_group_names: "{{ group_names|default([]) + ['all'] + [inventory_hostname] }}"
-
-- name: debug variable create_users_group_names
-  debug: var=create_users_group_names
+- name: Debug variable create_users_group_names
+  ansible.builtin.debug:
+    var: create_users_group_names
   when: debug_enabled_default | bool
 
-- name: debug variable users
-  debug: var=users
+- name: Debug variable users
+  ansible.builtin.debug:
+    var: users
   when: debug_enabled_default | bool
 
 - name: Add group | create primary group before adding user to group
-  group:
+  ansible.builtin.group:
     name: "{{ item.primarygroup }}"
     gid: "{{ item.primarygid | default(omit) }}"
     state: present
   when: item.primarygroup is defined and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
-    label: "primarygroup: {{ item.primarygroup if item.primarygroup is defined else '' }}, primarygid: {{ item.primarygid if item.primarygid is defined else 'default' }}"  # noqa 204
+    label: "primarygroup: {{ item.primarygroup if item.primarygroup is defined else '' }}, primarygid: {{ item.primarygid if item.primarygid is defined else 'default'
+      }}"
 
 # Get unique list of groups to create on the server (var is different on each server)
 # Still keeps formatting of comma separated list and converts to list (even if whitespace)
-- name: set_fact - get groups as list per server
-  set_fact:
-    groups_as_list: "{{ (groups_as_list|default([]) + item.groups.split(','))|map('trim')|list|sort|unique }}"
-  loop: '{{ users }}'
+- name: Set_fact - get groups as list per server
+  ansible.builtin.set_fact:
+    groups_as_list: "{{ (groups_as_list | default([]) + item.groups.split(',')) | map('trim') | list | sort | unique }}"
+  loop: "{{ users }}"
   when: item.groups is defined and item.servers | intersect(create_users_group_names)
   loop_control:
     label: "username: {{ item.username }}, groups_as_list: {{ item.groups if item.groups is defined else '' }}"
 
-- name: debug show groups_as_list
-  debug: var=groups_as_list
+- name: Debug show groups_as_list
+  ansible.builtin.debug:
+    var: groups_as_list
   when: debug_enabled_default | bool
 
 - name: Add group | create groups before adding user to group
-  group:
+  ansible.builtin.group:
     name: "{{ item }}"
     state: present
   when: groups_as_list is defined
@@ -46,7 +49,7 @@
     label: "groups: {{ item }}"
 
 - name: Add users | create users, shell, home dirs
-  user:
+  ansible.builtin.user:
     name: "{{ item.username }}"
     uid: "{{ item.uid | default(omit, True) }}"
     password: "{{ item.password if item.password is defined else '!' }}"
@@ -57,23 +60,26 @@
     createhome: true
     system: "{{ item.system | default(omit) }}"
     comment: "{{ item.comment if item.comment is defined else '' }}"
-    state: present  # hard-coded in case user sets state of absent. Choice made to never delete accounts!
+    state: present # hard-coded in case user sets state of absent. Choice made to never delete accounts!
   #   expires: -1  # unlock account if locked ###Doesn't work like chage..
   #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
   when: (item.user_state == 'present' or item.user_state == 'lock') and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
-    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{ item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined else ''}}, groups: {{ item.groups if item.groups is defined else ''}}, servers: {{ item.servers if item.servers is defined else '' }}, group_names: {{ create_users_group_names }}"  # noqa 204
+    label: "username: {{ item.username }}, user_state: {{ item.user_state }}, password: {{ 'True' if item.password is defined else 'False' }}, update_password: {{
+      item.update_password if item.update_password is defined else default_update_password }}, primarygroup: {{ item.primarygroup if item.primarygroup is defined
+      else '' }}, groups: {{ item.groups if item.groups is defined else '' }}, servers: {{ item.servers if item.servers is defined else '' }}, group_names: {{ create_users_group_names
+      }}"
 
 - name: Add users | Unlock password login (set expiry to -1)
-  user:
+  ansible.builtin.user:
     name: "{{ item.username }}"
-    expires: -1  # unlock account if locked
+    expires: -1 # unlock account if locked
   #   command: chage -E -1 {{ item.username }} #unlock password authentication
   # register: user_results
   when: item.user_state == 'present' and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
 
@@ -104,13 +110,13 @@
 #     label: "username: {{item.username}}, user_state: {{ item.user_state }}"
 
 - name: Lock users | Lock password & ssh key authentication
-  user:
+  ansible.builtin.user:
     name: "{{ item.username }}"
-    expires: 0  # lock account if not locked
+    expires: 0 # lock account if not locked
   # command: chage -E 0 {{ item.username }} #Alternative lock password & ssh key authentication
   # register: user_results
   when: item.user_state == 'lock' and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
     label: "username: {{ item.username }}, user_state: {{ item.user_state }}"
 
@@ -121,19 +127,20 @@
 #   with_items: "{{ users }}"
 
 - name: SSH Keys | Add authorized key for ssh key authentication
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.username }}"
     key: "{{ item.ssh_key }}"
     exclusive: "{{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'no' }}"
     path: "{{ '/home/' + item.username + '/.ssh/authorized_keys' if ansible_check_mode else omit }}"
     state: present
   when: item.ssh_key is defined and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
-    label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key is defined else 'False' }}"  # noqa 204
+    label: "username: {{ item.username }}, ssh_key: {{ 'True' if item.ssh_key is defined else 'False' }}, exclusive_ssh_key: {{ item.exclusive_ssh_key if item.exclusive_ssh_key
+      is defined else 'False' }}"
 
 - name: SSH Keys | Generate ssh key
-  user:
+  ansible.builtin.user:
     name: "{{ item.username }}"
     generate_ssh_key: "{{ item.generate_ssh_key | default(false) }}"
     ssh_key_bits: "{{ item.ssh_key_bits | default(omit) }}"
@@ -142,38 +149,40 @@
     # generate_ssh_key_comment: "{{ item.username }}@{{ ansible_hostname }}"
     ssh_key_comment: "{{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
   when: item.generate_ssh_key is defined and item.servers | intersect(create_users_group_names)
-  loop: '{{ users }}'
+  loop: "{{ users }}"
   loop_control:
-    label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.ssh_key_bits if item.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.ssh_key_passphrase is defined else 'False' }}, generate_ssh_key_comment: {{ item.generate_ssh_key_comment if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
+    label: "username: {{ item.username }}, generate_ssh_key: {{ 'True' if item.generate_ssh_key is defined else 'False' }}, ssh_key_bits: {{ item.ssh_key_bits if
+      item.ssh_key_bits is defined else '' }}, ssh_key_passphrase: {{ 'True' if item.ssh_key_passphrase is defined else 'False' }}, generate_ssh_key_comment: {{ item.generate_ssh_key_comment
+      if item.generate_ssh_key_comment is defined else default_generate_ssh_key_comment }}"
 
 - name: Sudo | add to sudoers file and validate
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^{{ item.username }} '
+    regexp: "^{{ item.username }} "
     # line: '{{ item.username }} ALL=(ALL) NOPASSWD:ALL'
-    line: "{{ item.username }} ALL=(ALL) {{ 'NOPASSWD:' if ( item.use_sudo_nopass|d(false) )  else '' }}ALL"
-    validate: 'visudo -cf %s'
+    line: "{{ item.username }} ALL=(ALL) {{ 'NOPASSWD:' if (item.use_sudo_nopass | d(false)) else '' }}ALL"
+    validate: "visudo -cf %s"
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == true and item.servers | intersect(create_users_group_names)  # noqa 601
-  loop: '{{ users }}'
+  when: item.use_sudo | d(false) | bool == true and item.servers | intersect(create_users_group_names) # noqa literal-compare
+  loop: "{{ users }}"
   loop_control:
-    label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}, use_sudo_nopass: {{ item.use_sudo_nopass|d(false) }}"
+    label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo | d(false) }}, use_sudo_nopass: {{ item.use_sudo_nopass | d(false) }}"
 # environment fixes Redhat issue of hard-coded path to visudo
 
 - name: Sudo | remove from sudoers file and validate
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     state: absent
-    regexp: '^{{ item.username }} '
-    line: '{{ item.username }}'
-    validate: 'visudo -cf %s'
+    regexp: "^{{ item.username }} "
+    line: "{{ item.username }}"
+    validate: "visudo -cf %s"
   environment:
     PATH: /usr/sbin:/usr/local/sbin:/sbin
   # TODO: Fix literal compare
-  when: item.use_sudo|d(false)|bool == false and item.servers | intersect(create_users_group_names)  # noqa 601
-  loop: '{{ users }}'
+  when: item.use_sudo | d(false) | bool == false and item.servers | intersect(create_users_group_names) # noqa literal-compare
+  loop: "{{ users }}"
   loop_control:
-    label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo|d(false) }}"
+    label: "username: {{ item.username }}, use_sudo: {{ item.use_sudo | d(false) }}"

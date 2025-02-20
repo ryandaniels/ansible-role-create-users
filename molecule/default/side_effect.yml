@@ -110,6 +110,7 @@
 
   roles:
     - role: ryandaniels.create_users
+    # - role: ../../../create-users
 
   post_tasks:
     # - name: Verify shell
@@ -133,7 +134,7 @@
       changed_when: false
 
     - name: Verify ssh key was changed
-      shell: grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
+      ansible.builtin.command: grep --silent "^ssh-rsa AAABNEW.... test104@server" /home/testuser104/.ssh/authorized_keys
       changed_when: false
 
     - name: Verify only 1 entry in authorized_keys file
